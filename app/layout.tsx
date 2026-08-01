@@ -4,6 +4,8 @@ import { Toaster } from "sonner";
 import { Providers } from "@/app/providers";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Header } from "@/components/shared/header";
+import { Footer } from "@/components/shared/footer";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -41,12 +43,16 @@ export default function RootLayout({
         archivo.variable,
         bricolage.variable,
         ibmPlexMono.variable,
-        "font-sans"
+        "font-sans",
       )}
     >
       <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
-        <Toaster richColors position="top-center" />
+        <div>
+          <Header />
+          <Providers>{children}</Providers>
+          <Toaster richColors position="top-center" />
+          <Footer />
+        </div>
       </body>
     </html>
   );

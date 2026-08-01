@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { MobileNav } from "@/components/home/mobile-nav";
 
 const links = [
+  { href: "/", label: "Home" },
   { href: "#services", label: "Services" },
   { href: "#how", label: "How it works" },
   { href: "#pros", label: "Technicians" },
