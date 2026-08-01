@@ -1,3 +1,4 @@
+"use server"
 
 export const getAllTechnician = async () => {
     const res = await fetch(`${process.env.BACKEND_URL}/api/technician`, {
@@ -15,9 +16,7 @@ export const getAllTechnician = async () => {
         throw new Error("Failed to fetch technicians");
     }
 
-
     const result = await res.json();
 
-    console.log(result)
     return result
 }

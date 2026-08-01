@@ -1,13 +1,38 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { bdt, pros} from "./data";
+import type { TechnicianListItem } from "@/lib/types";
+import type { HomePro } from "./data";
+import { bdt} from "./data";
 import { SectionHeading } from "./section-heading";
 import { getAllTechnician } from "../../_actions/getAllTechnician";
 
-export async function Pros() {
+function toHomePro(t: TechnicianListItem): HomePro {
+  const name = t.user.name;
+  const initials = name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
 
-  const technicians = await getAllTechnician()
-  const techniciansList = technicians.data
+  return {
+    name,
+    initials,
+    skill: t.skills[0] ?? "Technician",
+    area: t.location ?? "Dhaka",
+    bio: t.bio ?? "Background-checked and rated by the people who hired them.",
+    rating: t.avgRating ?? 0,
+    reviews: t.totalReviews ?? 0,
+    experienceYrs: t.experienceYrs ?? 0,
+    hourlyRate: Number(t.hourlyRate) || 0,
+    verified: t.isVerified,
+  };
+}
+
+export async function Pros() {
+  const technicians = await getAllTechnician();
+  const list = (technicians.data?.data ?? []).map(toHomePro);
 
   return (
     <section id="pros" className="scroll-mt-20 border-t-2 border-dashed border-ink/20">
@@ -18,7 +43,7 @@ export async function Pros() {
           sub="Every technician on the board is background-checked and rated by the people who actually hired them."
         />
         <div className="grid gap-4 md:grid-cols-3">
-          {pros.map((pro) => (
+          {list.map((pro: HomePro) => (
             <Card
               key={pro.name}
               className="flex flex-col rounded-sm border-ink/25 bg-ticket-hi p-6 shadow-none transition-all hover:-translate-y-0.5 hover:border-ink"

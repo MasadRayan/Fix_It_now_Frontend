@@ -22,6 +22,11 @@ export async function getAccessToken(): Promise<string | null> {
   return store.get(ACCESS_COOKIE)?.value ?? null;
 }
 
+export async function getRole(): Promise<string | null> {
+  const store = await cookies();
+  return store.get(ROLE_COOKIE)?.value ?? null;
+}
+
 export async function getSession(): Promise<Session | null> {
   const store = await cookies();
   const token = store.get(ACCESS_COOKIE)?.value;
