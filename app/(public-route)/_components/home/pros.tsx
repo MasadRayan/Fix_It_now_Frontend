@@ -1,9 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { bdt, pros } from "./data";
+import { bdt, pros} from "./data";
 import { SectionHeading } from "./section-heading";
+import { getAllTechnician } from "../../_actions/getAllTechnician";
 
-export function Pros() {
+export async function Pros() {
+
+  const technicians = await getAllTechnician()
+  const techniciansList = technicians.data
+
   return (
     <section id="pros" className="scroll-mt-20 border-t-2 border-dashed border-ink/20">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
