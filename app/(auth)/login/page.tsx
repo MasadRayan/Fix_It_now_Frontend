@@ -75,7 +75,13 @@ export default function LoginPage({
               {error}
             </p>
           )}
-          <Button type="submit" className="w-full" loading={loading}>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading && (
+              <span
+                aria-hidden
+                className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+              />
+            )}
             Log in
           </Button>
         </form>

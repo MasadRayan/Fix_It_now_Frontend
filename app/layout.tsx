@@ -1,22 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Bricolage_Grotesque, IBM_Plex_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { Providers } from "@/app/providers";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "FixItNow",
-  description: "Home services marketplace",
+  title: "FixItNow — Home services, booked in minutes",
+  description:
+    "Vetted technicians for plumbing, electrics, AC and more across Dhaka. Fixed prices in taka, booked in minutes.",
 };
 
 export default function RootLayout({
@@ -27,7 +35,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={cn(
+        "h-full",
+        "antialiased",
+        archivo.variable,
+        bricolage.variable,
+        ibmPlexMono.variable,
+        "font-sans"
+      )}
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
