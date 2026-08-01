@@ -1,7 +1,7 @@
 "use server"
 
-export const getAllTechnician = async () => {
-    const res = await fetch(`${process.env.BACKEND_URL}/api/technician`, {
+export const getAllServices = async () => {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/services/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -9,7 +9,7 @@ export const getAllTechnician = async () => {
     });
 
     if (!res.ok) {
-        throw new Error("Failed to fetch technicians");
+        throw new Error("Failed to fetch services");
     }
 
     const result = await res.json();

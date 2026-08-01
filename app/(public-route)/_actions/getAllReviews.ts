@@ -6,10 +6,6 @@ export const getAllReviews = async () => {
         headers: {
             "Content-Type": "application/json",
         },
-        cache: "force-cache",
-        next: {
-            revalidate: 24 * 60 * 60 * 7, // 7 days
-        }
     });
 
     if (!res.ok) {

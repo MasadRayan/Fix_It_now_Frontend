@@ -1,11 +1,31 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { bdt, services } from "./data";
+import type { ServiceListItem } from "@/lib/types";
+import { bdt } from "./data";
+import type { HomeService } from "./data";
 import { SectionHeading } from "./section-heading";
 import { TicketStub } from "./ticket-stub";
+import { getAllServices } from "../../_actions/getAllServices";
 
-export function Services() {
+function toHomeService(s: ServiceListItem, index: number): HomeService {
+  return {
+    serial: `FIN-${1042 + index}`,
+    category: s.category?.name ?? "Service",
+    title: s.title,
+    description: s.description,
+    durationMins: s.durationMins,
+    price: Number(s.price) || 0,
+    technician: s.technician?.user.name ?? "Technician",
+    rating: s.technician?.avgRating ?? 0,
+    reviews: s.technician?.totalReviews ?? 0,
+    area: s.technician?.location ?? "Dhaka",
+  };
+}
+
+export async function Services() {
+  const allServices = await getAllServices();
+  const list = (allServices.data?.data ?? []).map(toHomeService);
   return (
     <section id="services" className="scroll-mt-20 border-t-2 border-dashed border-ink/20">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
@@ -25,7 +45,7 @@ export function Services() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
+          {list.map((service: HomeService) => (
             <article
               key={service.serial}
               className="group flex overflow-hidden rounded-sm border-2 border-ink/80 transition-transform duration-200 hover:-translate-y-1"
