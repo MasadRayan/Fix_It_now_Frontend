@@ -358,15 +358,15 @@ export interface PaymentListItem extends Payment {
   };
 }
 
-export interface AdminUserListItem extends User {
-  technicianProfile?: {
-    id: string;
-    avgRating: number;
-    totalReviews: number;
-    isVerified: boolean;
-    location: string | null;
-  } | null;
-}
+// export interface AdminUserListItem extends User {
+//   technicianProfile?: {
+//     id: string;
+//     avgRating: number;
+//     totalReviews: number;
+//     isVerified: boolean;
+//     location: string | null;
+//   } | null;
+// }
 
 export interface AdminBookingListItem extends Booking {
   customer?: { name: string; email: string };
