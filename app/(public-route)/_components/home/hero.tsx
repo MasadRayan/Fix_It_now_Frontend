@@ -14,7 +14,7 @@ export function Hero() {
           <h1 className="mt-4 font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
             Something broken?
             <br />
-            <span className="underline decoration-safety decoration-[6px] underline-offset-[10px]">
+            <span className="underline decoration-safety decoration-[6px] underline-offset-10">
               Get it fixed now.
             </span>
           </h1>
