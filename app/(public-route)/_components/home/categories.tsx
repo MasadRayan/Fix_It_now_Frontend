@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { categories, tickerItems } from "@/components/home/data";
-import { SectionHeading } from "@/components/home/section-heading";
+import { categories, tickerItems } from "./data";
+import { SectionHeading } from "./section-heading";
 
 function Ticker() {
   const items = [...tickerItems, ...tickerItems];

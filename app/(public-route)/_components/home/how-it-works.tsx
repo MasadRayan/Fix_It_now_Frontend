@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { SectionHeading } from "@/components/home/section-heading";
+import { SectionHeading } from "./section-heading";
 
 const steps = [
   {

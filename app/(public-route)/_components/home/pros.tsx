@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { bdt, pros } from "@/components/home/data";
-import { SectionHeading } from "@/components/home/section-heading";
+import { bdt, pros } from "./data";
+import { SectionHeading } from "./section-heading";
 
 export function Pros() {
   return (

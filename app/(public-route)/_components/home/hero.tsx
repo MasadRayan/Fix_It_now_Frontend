@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LiveCounter } from "@/components/home/live-counter";
-import { TicketStub } from "@/components/home/ticket-stub";
+import { LiveCounter } from "./live-counter";
+import { TicketStub } from "./ticket-stub";
 
 export function Hero() {
   return (

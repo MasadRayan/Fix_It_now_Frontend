@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { bdt, services } from "@/components/home/data";
-import { SectionHeading } from "@/components/home/section-heading";
-import { TicketStub } from "@/components/home/ticket-stub";
+import { bdt, services } from "./data";
+import { SectionHeading } from "./section-heading";
+import { TicketStub } from "./ticket-stub";
 
 export function Services() {
   return (

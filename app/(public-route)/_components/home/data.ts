@@ -1,3 +1,4 @@
+
 export interface HomeCategory {
   code: string;
   name: string;
@@ -31,6 +32,8 @@ export interface HomePro {
 }
 
 export const bdt = (amount: number) => `\u09F3${amount.toLocaleString("en-IN")}`;
+
+
 
 export const categories: HomeCategory[] = [
   { code: "PL", name: "Plumbing", count: 48 },

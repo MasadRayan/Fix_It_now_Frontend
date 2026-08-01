@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MobileNav } from "@/components/home/mobile-nav";
+import { MobileNav } from "./mobile-nav";
 
 const links = [
   { href: "/", label: "Home" },

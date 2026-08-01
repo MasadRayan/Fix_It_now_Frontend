@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Bricolage_Grotesque, IBM_Plex_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { Providers } from "@/app/providers";
-import "./globals.css";
+import "../globals.css";
 import { cn } from "@/lib/utils";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
@@ -48,8 +48,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <div>
+          <Header />
           <Providers>{children}</Providers>
           <Toaster richColors position="top-center" />
+          <Footer />
         </div>
       </body>
     </html>
