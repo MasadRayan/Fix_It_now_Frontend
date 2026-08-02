@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { MobileNav } from "./mobile-nav";
+import { UserMenu } from "./user-menu";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
-  { href: "#how", label: "How it works" },
-  { href: "#pros", label: "Technicians" },
 ];
 
 export function Header() {
@@ -39,18 +37,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Link
-            href="/login"
-            className="rounded-md px-3 py-2 text-sm font-medium text-bone/80 transition-colors hover:text-bone"
-          >
-            Log in
-          </Link>
-          <Button
-            asChild
-            className="rounded-md bg-safety font-display font-bold text-ink hover:bg-safety hover:brightness-110"
-          >
-            <Link href="/register">Book a service</Link>
-          </Button>
+          <UserMenu />
         </div>
 
         <MobileNav links={links} />
