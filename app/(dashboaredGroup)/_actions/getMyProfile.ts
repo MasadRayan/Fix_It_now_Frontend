@@ -1,5 +1,6 @@
 "use server";
 
+import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import type { User } from "@/lib/types";
 import { BACKEND_URL, TOKEN_COOKIE } from "@/lib/backend";
@@ -16,23 +17,26 @@ export const getMyProfile = async () => {
     }
   }
 
-  const res = await fetch(`${BACKEND_URL}/api/auth/me`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  return unstable_cache(
+    async (accessToken: string | null) => {
+      const res = await fetch(`${BACKEND_URL}/api/auth/me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const user = await res.json();
+
+      return user.data as User;
     },
-    cache: "force-cache",
-    next: {
-        revalidate: 60 * 60 * 24 *7, // 7 day
-    }
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch profile");
-  }
-
-  const user = await res.json()
-
-  return user.data as User;
+    [`my-profile-${token ?? "anonymous"}`],
+    { revalidate: 60 * 60 * 24 * 7 }
+  )(token);
 };

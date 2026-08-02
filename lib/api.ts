@@ -48,9 +48,11 @@ export class ApiError extends Error {
 
 export async function serverFetch<T = unknown>(
   path: string,
-  init?: RequestInit
+  init?: RequestInit,
+  tokenOverride?: string | null
 ): Promise<T> {
-  const token = await getAccessToken();
+  const token =
+    tokenOverride !== undefined ? tokenOverride : await getAccessToken();
 
   const headers = new Headers(init?.headers);
   headers.set("Content-Type", "application/json");
