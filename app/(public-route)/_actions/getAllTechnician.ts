@@ -1,14 +1,16 @@
-"use server"
+const REVALIDATE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
-import { unstable_cache } from "next/cache";
-
-const fetchTechnicians = async () => {
+export const getAllTechnician = async () => {
     const res = await fetch(`${process.env.BACKEND_URL}/api/technician`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
         },
-        cache: "no-store",
+        cache: "force-cache",
+        next: {
+            revalidate: REVALIDATE_SECONDS,
+            tags: ["public-technicians"],
+        },
     });
 
     if (!res.ok) {
@@ -17,10 +19,3 @@ const fetchTechnicians = async () => {
 
     return res.json();
 }
-
-export const getAllTechnician = async () =>
-    unstable_cache(
-        fetchTechnicians,
-        ["getAllTechnician"],
-        { revalidate: 24 * 60 * 60 * 7 } // 7 days
-    )();

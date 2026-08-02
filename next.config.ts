@@ -10,7 +10,8 @@ const nextConfig: NextConfig = {
         hostname: "i.ibb.co.com"
       }
     ]
-  }
+  },
+  cacheComponents: true,
 };
 
 export default nextConfig;

@@ -1,9 +1,7 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
 import { getAccessToken } from "@/lib/api";
 import { BACKEND_URL } from "@/lib/backend";
-import { BOOKINGS_CACHE_TAG } from "./cacheTags";
 
 export interface CancelBookingResult {
   success: boolean;
@@ -49,8 +47,6 @@ export async function cancelBooking(
       message: result?.message ?? "Cancelling the booking failed. Try again.",
     };
   }
-
-  revalidateTag(BOOKINGS_CACHE_TAG, { expire: 0 });
 
   return { success: true, message: result.message ?? "Booking cancelled." };
 }

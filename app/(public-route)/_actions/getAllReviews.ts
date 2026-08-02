@@ -1,4 +1,4 @@
-"use server"
+const REVALIDATE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
 export const getAllReviews = async () => {
     const res = await fetch(`${process.env.BACKEND_URL}/api/review`, {
@@ -8,8 +8,9 @@ export const getAllReviews = async () => {
         },
         cache: "force-cache",
         next: {
-            revalidate: 24 * 60 * 60 * 7, // 7 days
-        }
+            revalidate: REVALIDATE_SECONDS,
+            tags: ["public-reviews"],
+        },
     });
 
     if (!res.ok) {
@@ -18,6 +19,5 @@ export const getAllReviews = async () => {
 
     const result = await res.json();
 
-    console.log(result)
     return result
 }

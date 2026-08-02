@@ -1,10 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import type { CreateServiceRequest, Service } from "@/lib/types";
 import { mutateBackend, type MutationResult } from "./mutate";
-import { TECHNICIAN_CACHE_TAG } from "./cacheTags";
 
 const schema = z.object({
   title: z.string().trim().min(3, "Title must be at least 3 characters."),
@@ -33,7 +32,7 @@ export async function createService(
   const result = await mutateBackend<Service>("/api/services/", "POST", parsed.data);
 
   if (result.success) {
-    revalidateTag(TECHNICIAN_CACHE_TAG, { expire: 0 });
+    updateTag("public-services");
   }
 
   return result;

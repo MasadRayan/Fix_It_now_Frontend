@@ -1,10 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { revalidateTag } from "next/cache";
 import type { UpdateTechnicianProfileRequest, User } from "@/lib/types";
 import { mutateBackend, type MutationResult } from "./mutate";
-import { PROFILE_CACHE_TAG, TECHNICIAN_CACHE_TAG } from "./cacheTags";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters."),
@@ -41,16 +39,5 @@ export async function updateTechnicianProfile(
     return { success: false, message: "Nothing to update." };
   }
 
-  const result = await mutateBackend<User>(
-    "/api/technician/profile",
-    "PATCH",
-    payload
-  );
-
-  if (result.success) {
-    revalidateTag(PROFILE_CACHE_TAG, { expire: 0 });
-    revalidateTag(TECHNICIAN_CACHE_TAG, { expire: 0 });
-  }
-
-  return result;
+  return mutateBackend<User>("/api/technician/profile", "PATCH", payload);
 }

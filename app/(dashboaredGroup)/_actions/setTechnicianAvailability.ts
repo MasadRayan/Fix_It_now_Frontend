@@ -1,10 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { revalidateTag } from "next/cache";
 import type { AvailabilityRequest, TechnicianAvailability } from "@/lib/types";
 import { mutateBackend, type MutationResult } from "./mutate";
-import { TECHNICIAN_CACHE_TAG } from "./cacheTags";
 
 const DAYS = [
   "MONDAY",
@@ -42,15 +40,9 @@ export async function setTechnicianAvailability(
     };
   }
 
-  const result = await mutateBackend<TechnicianAvailability[]>(
+  return mutateBackend<TechnicianAvailability[]>(
     "/api/technician/availability",
     "PUT",
     parsed.data
   );
-
-  if (result.success) {
-    revalidateTag(TECHNICIAN_CACHE_TAG, { expire: 0 });
-  }
-
-  return result;
 }

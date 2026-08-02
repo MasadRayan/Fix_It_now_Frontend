@@ -1,4 +1,4 @@
-"use server"
+const REVALIDATE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
 export const getAllCategory = async () => {
     const res = await fetch(`${process.env.BACKEND_URL}/api/category`, {
@@ -8,8 +8,9 @@ export const getAllCategory = async () => {
         },
         cache: "force-cache",
         next: {
-            revalidate: 24 * 60 * 60 * 7, // 7 days
-        }
+            revalidate: REVALIDATE_SECONDS,
+            tags: ["public-categories"],
+        },
     });
 
     if (!res.ok) {

@@ -1,14 +1,16 @@
-"use server";
+const REVALIDATE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
-import { unstable_cache } from "next/cache";
-
-const fetchServiceById = async (id: string) => {
+export const getServiceById = async (id: string) => {
   const res = await fetch(`${process.env.BACKEND_URL}/api/services/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    cache: "no-store",
+    cache: "force-cache",
+    next: {
+      revalidate: REVALIDATE_SECONDS,
+      tags: ["public-services"],
+    },
   });
 
   if (!res.ok) {
@@ -17,10 +19,3 @@ const fetchServiceById = async (id: string) => {
 
   return res.json();
 };
-
-export const getServiceById = async (id: string) =>
-  unstable_cache(
-    fetchServiceById,
-    ["getServiceById"],
-    { revalidate: 24 * 60 * 60 * 7 } // 7 days
-  )(id);

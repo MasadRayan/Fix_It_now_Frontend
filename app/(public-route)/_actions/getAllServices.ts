@@ -1,14 +1,12 @@
-"use server"
-
-import { unstable_cache } from "next/cache";
-
 export interface GetAllServicesParams {
   search?: string;
   category?: string;
   page?: number;
 }
 
-const fetchServices = async (filters: GetAllServicesParams = {}) => {
+const REVALIDATE_SECONDS = 7 * 24 * 60 * 60; // 7 days
+
+export const getAllServices = async (filters: GetAllServicesParams = {}) => {
     const params = new URLSearchParams();
     if (filters.search) params.set("search", filters.search);
     if (filters.category) params.set("category", filters.category);
@@ -20,7 +18,11 @@ const fetchServices = async (filters: GetAllServicesParams = {}) => {
         headers: {
             "Content-Type": "application/json",
         },
-        cache: "no-store",
+        cache: "force-cache",
+        next: {
+            revalidate: REVALIDATE_SECONDS,
+            tags: ["public-services"],
+        },
     });
 
     if (!res.ok) {
@@ -29,10 +31,3 @@ const fetchServices = async (filters: GetAllServicesParams = {}) => {
 
     return res.json();
 }
-
-export const getAllServices = async (filters: GetAllServicesParams = {}) =>
-    unstable_cache(
-        fetchServices,
-        ["getAllServices"],
-        { revalidate: 24 * 60 * 60 * 7 } // 7 days
-    )(filters);
