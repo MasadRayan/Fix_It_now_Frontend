@@ -141,15 +141,29 @@ export function TechnicianProfileForm({ user }: { user: User }) {
               placeholder="Mirpur, Dhaka"
             />
           </Field>
-          <Field label="Avatar URL" htmlFor="tp-avatar">
-            <input
-              id="tp-avatar"
-              type="url"
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
-              className={inputCls}
-              placeholder="https://…"
-            />
+          <Field label="Avatar URL" htmlFor="tp-avatar" hint="Paste an image link to update your photo">
+            <div className="mt-1.5 flex items-center gap-3">
+              {avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={avatarUrl}
+                  alt="Avatar preview"
+                  className="size-14 shrink-0 rounded-full border-2 border-ink/20 object-cover"
+                />
+              ) : (
+                <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-safety font-display text-xl font-bold text-ink ring-2 ring-ink/15">
+                  {(name.trim()[0] ?? "?").toUpperCase()}
+                </span>
+              )}
+              <input
+                id="tp-avatar"
+                type="url"
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+                className={inputCls}
+                placeholder="https://…"
+              />
+            </div>
           </Field>
           <Field label="Hourly rate (৳)" htmlFor="tp-rate" hint="Positive number">
             <input
