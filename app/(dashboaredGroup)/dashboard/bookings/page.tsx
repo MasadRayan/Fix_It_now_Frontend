@@ -1,11 +1,8 @@
-import React from 'react'
+import { getMyBookings } from "../../_actions/getMyBookings";
+import { BookingsList } from "../../_components/bookings-list";
 
-const UserBookingPage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+export default async function UserBookingsPage() {
+  const bookings = await getMyBookings();
+
+  return <BookingsList bookings={bookings} />;
 }
-
-export default UserBookingPage

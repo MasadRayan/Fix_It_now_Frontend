@@ -1,11 +1,8 @@
-import React from 'react'
+import { getMyPayments } from "../../_actions/getMyPayments";
+import { PaymentsList } from "../../_components/payments-list";
 
-const UserPaymentPage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+export default async function UserPaymentsPage() {
+  const payments = await getMyPayments();
+
+  return <PaymentsList payments={payments} />;
 }
-
-export default UserPaymentPage
