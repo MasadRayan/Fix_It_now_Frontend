@@ -11,6 +11,7 @@ export class ClientError extends Error {
 interface Envelope<T> {
   data?: T;
   error?: string;
+  message?: string;
 }
 
 export async function clientFetch<T = unknown>(

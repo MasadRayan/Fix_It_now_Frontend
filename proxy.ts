@@ -4,6 +4,12 @@ import type { NextRequest } from "next/server";
 const AUTH_ROUTES = ["/login", "/register"];
 const PUBLIC_ROUTES = ["/", "/services"];
 
+const roleHome: Record<string, string> = {
+  CUSTOMER: "/dashboard",
+  TECHNICIAN: "/technician-dashboard",
+  ADMIN: "/admin-dashboard",
+};
+
 const roleRequired: Record<string, string> = {
   "/dashboard": "CUSTOMER",
   "/technician-dashboard": "TECHNICIAN",
@@ -45,7 +51,7 @@ export async function proxy(request: NextRequest) {
   );
 
   if (accessToken && role && isAuthRoute) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL(roleHome[role] ?? "/dashboard", request.url));
   }
 
   if (accessToken && !role) {
@@ -65,7 +71,9 @@ export async function proxy(request: NextRequest) {
   for (const [prefix, required] of Object.entries(roleRequired)) {
     if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
       if (role !== required) {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
+        return NextResponse.redirect(
+          new URL((role && roleHome[role]) ?? "/dashboard", request.url)
+        );
       }
     }
   }

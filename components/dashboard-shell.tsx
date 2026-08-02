@@ -11,21 +11,21 @@ import { cn } from "@/lib/utils";
 const navByRole: Record<string, Array<{ href: string; label: string }>> = {
   CUSTOMER: [
     { href: "/dashboard", label: "Overview" },
-    { href: "/dashboard/customer/bookings", label: "My Bookings" },
-    { href: "/dashboard/customer/payments", label: "Payments" },
+    { href: "/dashboard/bookings", label: "My Bookings" },
+    { href: "/dashboard/payments", label: "Payments" },
   ],
   TECHNICIAN: [
-    { href: "/dashboard", label: "Overview" },
-    { href: "/dashboard/technician/profile", label: "Profile" },
-    { href: "/dashboard/technician/availability", label: "Availability" },
-    { href: "/dashboard/technician/services", label: "Services" },
-    { href: "/dashboard/technician/bookings", label: "Bookings" },
+    { href: "/technician-dashboard", label: "Overview" },
+    { href: "/technician-dashboard/profile", label: "Profile" },
+    { href: "/technician-dashboard/availability", label: "Availability" },
+    { href: "/technician-dashboard/services", label: "Services" },
+    { href: "/technician-dashboard/bookings", label: "Bookings" },
   ],
   ADMIN: [
-    { href: "/dashboard", label: "Overview" },
-    { href: "/dashboard/admin/users", label: "Users" },
-    { href: "/dashboard/admin/bookings", label: "Bookings" },
-    { href: "/dashboard/admin/categories", label: "Categories" },
+    { href: "/admin-dashboard", label: "Overview" },
+    { href: "/admin-dashboard/users", label: "Users" },
+    { href: "/admin-dashboard/bookings", label: "Bookings" },
+    { href: "/admin-dashboard/categories", label: "Categories" },
   ],
 };
 

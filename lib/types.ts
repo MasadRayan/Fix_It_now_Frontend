@@ -188,7 +188,7 @@ export interface AuthTokens {
   refreshToken: string;
 }
 
-export interface LoginResponse extends User {}
+export type LoginResponse = User;
 
 export interface UpdateTechnicianProfileRequest {
   name?: string;
