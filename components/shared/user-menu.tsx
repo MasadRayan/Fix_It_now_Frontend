@@ -98,7 +98,6 @@ export function UserMenu() {
             className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-safety"
           >
             {user.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <Image
                 src={user.avatarUrl}
                 alt=""

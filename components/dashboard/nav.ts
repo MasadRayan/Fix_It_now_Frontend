@@ -6,6 +6,7 @@ export interface NavLink {
 export const navByRole: Record<string, NavLink[]> = {
   CUSTOMER: [
     { href: "/dashboard", label: "Overview" },
+    { href: "/dashboard/profile", label: "Profile" },
     { href: "/dashboard/bookings", label: "Bookings" },
     { href: "/dashboard/payments", label: "Payments" },
   ],

@@ -101,7 +101,7 @@ export function Sidebar({
           </nav>
 
           <div className="relative border-t-2 border-dashed border-ink/20 p-4">
-            <div className="absolute -top-[3px] left-1/2 flex -translate-x-1/2 gap-2">
+            <div className="absolute -top-0.75 left-1/2 flex -translate-x-1/2 gap-2">
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
