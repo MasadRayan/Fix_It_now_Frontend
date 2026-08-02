@@ -3,6 +3,7 @@ import { Categories } from "./_components/home/categories";
 import { HowItWorks } from "./_components/home/how-it-works";
 import { Pros } from "./_components/home/pros";
 import { TrustStrip } from "./_components/home/trust-strip";
+import { Faq } from "./_components/home/faq";
 import { Cta } from "./_components/home/cta";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
         <HowItWorks />
         <Pros />
         <TrustStrip />
+        <Faq />
         <Cta />
       </main>
     </div>

@@ -179,6 +179,10 @@ body {
   .animate-punch-ring {
     animation: none;
   }
+
+  [data-state="open"].faq-answer {
+    animation: none;
+  }
 }
 
 :root {
