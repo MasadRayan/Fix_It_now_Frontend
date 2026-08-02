@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         hostname: "example.com"
+      },
+      {
+        hostname: "i.ibb.co.com"
       }
     ]
   }
