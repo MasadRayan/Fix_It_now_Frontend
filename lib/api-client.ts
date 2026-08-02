@@ -45,6 +45,21 @@ export function setToken(token: string | null): void {
   }
 }
 
+const MAX_ATTEMPTS = 3;
+const ATTEMPT_TIMEOUT_MS = 5000;
+const RETRY_DELAY_MS = 150;
+
+function isNetworkError(error: unknown): boolean {
+  const cause = (error as { cause?: { code?: string } })?.cause;
+  const code = cause?.code;
+  if (typeof code === "string") {
+    return /^(ECONNREFUSED|ECONNRESET|ENOTFOUND|ETIMEDOUT|EAI_AGAIN|EHOSTUNREACH|ENETUNREACH|UND_ERR_CONNECT_TIMEOUT|UND_ERR_SOCKET|UND_ERR_HEADERS_TIMEOUT)/.test(
+      code
+    );
+  }
+  return error instanceof TypeError;
+}
+
 export async function apiFetch<T = unknown>(
   path: string,
   init?: RequestInit
@@ -56,11 +71,31 @@ export async function apiFetch<T = unknown>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const res = await fetch(`${BACKEND_URL}${path}`, {
-    ...init,
-    headers,
-    cache: "no-store",
-  });
+  let lastError: unknown;
+  let res: Response | null = null;
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      res = await fetch(`${BACKEND_URL}${path}`, {
+        ...init,
+        headers,
+        cache: "no-store",
+        signal: AbortSignal.timeout(ATTEMPT_TIMEOUT_MS),
+      });
+      break;
+    } catch (error) {
+      lastError = error;
+      if (attempt < MAX_ATTEMPTS && isNetworkError(error)) {
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  if (!res) {
+    throw lastError ?? new Error("Network request failed.");
+  }
 
   const json = (await res.json().catch(() => null)) as Envelope<T> | null;
 

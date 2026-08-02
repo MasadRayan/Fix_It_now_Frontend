@@ -1,6 +1,7 @@
 import "server-only";
 import { getAccessToken } from "@/lib/api";
 import { BACKEND_URL } from "@/lib/backend";
+import { backendFetch } from "@/lib/fetch-backend";
 
 export interface MutationResult<T = unknown> {
   success: boolean;
@@ -17,7 +18,7 @@ export async function mutateBackend<T = unknown>(
 
   let res: Response;
   try {
-    res = await fetch(`${BACKEND_URL}${path}`, {
+    res = await backendFetch(`${BACKEND_URL}${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",

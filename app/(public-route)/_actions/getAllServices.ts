@@ -1,3 +1,5 @@
+import { backendFetch } from "@/lib/fetch-backend";
+
 export interface GetAllServicesParams {
   search?: string;
   category?: string;
@@ -13,7 +15,7 @@ export const getAllServices = async (filters: GetAllServicesParams = {}) => {
     if (filters.page && filters.page > 1) params.set("page", String(filters.page));
     const query = params.toString();
 
-    const res = await fetch(`${process.env.BACKEND_URL}/api/services/${query ? `?${query}` : ""}`, {
+    const res = await backendFetch(`${process.env.BACKEND_URL}/api/services/${query ? `?${query}` : ""}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

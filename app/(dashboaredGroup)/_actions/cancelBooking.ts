@@ -2,6 +2,7 @@
 
 import { getAccessToken } from "@/lib/api";
 import { BACKEND_URL } from "@/lib/backend";
+import { backendFetch } from "@/lib/fetch-backend";
 
 export interface CancelBookingResult {
   success: boolean;
@@ -16,17 +17,20 @@ export async function cancelBooking(
 
   let res: Response;
   try {
-    res = await fetch(`${BACKEND_URL}/api/bookings/${bookingId}/cancel`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify({
-        cancelReason: cancelReason?.trim() || undefined,
-      }),
-      cache: "no-store",
-    });
+    res = await backendFetch(
+      `${BACKEND_URL}/api/bookings/${bookingId}/cancel`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          cancelReason: cancelReason?.trim() || undefined,
+        }),
+        cache: "no-store",
+      }
+    );
   } catch {
     return {
       success: false,

@@ -2,6 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import type { ApiEnvelope } from "@/lib/types";
 import { BACKEND_URL, TOKEN_COOKIE } from "@/lib/backend";
+import { backendFetch } from "@/lib/fetch-backend";
 
 function decodeCookieValue(value: string): string {
   try {
@@ -60,7 +61,7 @@ export async function serverFetch<T = unknown>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const res = await fetch(`${BACKEND_URL}${path}`, {
+  const res = await backendFetch(`${BACKEND_URL}${path}`, {
     ...init,
     headers,
     cache: "no-store",

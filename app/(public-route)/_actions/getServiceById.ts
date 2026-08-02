@@ -1,7 +1,9 @@
+import { backendFetch } from "@/lib/fetch-backend";
+
 const REVALIDATE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
 export const getServiceById = async (id: string) => {
-  const res = await fetch(`${process.env.BACKEND_URL}/api/services/${id}`, {
+  const res = await backendFetch(`${process.env.BACKEND_URL}/api/services/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
