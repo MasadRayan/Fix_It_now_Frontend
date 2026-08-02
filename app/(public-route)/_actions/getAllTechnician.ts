@@ -1,22 +1,25 @@
 "use server"
 
-export const getAllTechnician = async () => {
+import { unstable_cache } from "next/cache";
+
+const fetchTechnicians = async () => {
     const res = await fetch(`${process.env.BACKEND_URL}/api/technician`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
         },
-        cache: "force-cache",
-        next: {
-            revalidate: 24 * 60 * 60 * 7, // 7 days
-        }
+        cache: "no-store",
     });
 
     if (!res.ok) {
         throw new Error("Failed to fetch technicians");
     }
 
-    const result = await res.json();
-
-    return result
+    return res.json();
 }
+
+export const getAllTechnician = unstable_cache(
+    fetchTechnicians,
+    ["getAllTechnician"],
+    { revalidate: 24 * 60 * 60 * 7 } // 7 days
+);
