@@ -1,7 +1,7 @@
-import { getMyProfile } from "../_actions/getMyProfile";
 import type { User } from "@/lib/types";
-import { RecordCard } from "../_components/record-card";
-import { RecordError } from "../_components/record-error";
+import { RecordCard } from "../../_components/profile/record-card";
+import { RecordError } from "../../_components/profile/record-error";
+import { getMyProfile } from "../../_actions/getMyProfile";
 
 async function loadProfile(): Promise<User | null> {
   try {
