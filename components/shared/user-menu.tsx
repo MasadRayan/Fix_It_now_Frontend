@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
 import type { User } from "@/lib/types";
 import Image from "next/image";
+import { useAuth } from "@/contexts/auth-context";
 
 const dashboardByRole: Record<User["role"], string> = {
   CUSTOMER: "/dashboard",
@@ -24,20 +25,9 @@ function initialsOf(name: string): string {
 
 export function UserMenu() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null | undefined>(undefined);
+  const { user, status, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch("/api/auth/me", { signal: controller.signal })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((json) => setUser(json.data ?? null))
-      .catch((error) => {
-        if ((error as Error)?.name !== "AbortError") setUser(null);
-      });
-    return () => controller.abort();
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -57,18 +47,13 @@ export function UserMenu() {
 
   const handleLogout = async () => {
     setOpen(false);
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch {
-      // Cookie is cleared server-side regardless of network result.
-    }
-    setUser(null);
+    await logout();
     router.refresh();
   };
 
   return (
     <div ref={rootRef} className="relative">
-      {user === undefined ? (
+      {status === "loading" ? (
         <div className="flex items-center gap-2">
           <span className="hidden size-9 animate-pulse rounded-full bg-white/10 sm:block" />
           <span className="hidden h-4 w-16 animate-pulse rounded bg-white/10 sm:block" />

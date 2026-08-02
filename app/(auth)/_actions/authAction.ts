@@ -29,12 +29,20 @@ export async function loginAction(
     return { success: false, message: "Email and password are required." };
   }
 
-  const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      cache: "no-store",
+    });
+  } catch {
+    return {
+      success: false,
+      message: "Could not reach the server. Check your connection and try again.",
+    };
+  }
 
   const result = (await res.json().catch(() => null)) as {
     success: boolean;

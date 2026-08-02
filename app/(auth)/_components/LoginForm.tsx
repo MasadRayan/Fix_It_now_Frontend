@@ -1,8 +1,10 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { loginAction, type LoginState } from "../_actions/authAction";
+import { useAuth } from "@/contexts/auth-context";
+import type { User } from "@/lib/types";
 import { Label } from "@/components/ui/input";
 
 const inputClass =
@@ -11,24 +13,51 @@ const inputClass =
 const labelClass =
   "mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-steel";
 
-const initialState: LoginState = { success: true, message: null };
+const roleHome: Record<User["role"], string> = {
+  CUSTOMER: "/dashboard",
+  TECHNICIAN: "/technician-dashboard",
+  ADMIN: "/admin-dashboard",
+};
 
 export default function LoginForm({ redirectTo }: { redirectTo: string }) {
-  const [state, formAction, pending] = useActionState(
-    loginAction.bind(null, redirectTo),
-    initialState
-  );
+  const router = useRouter();
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (state.message) {
-      toast.error(state.message);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
+    setPending(true);
+
+    let role: User["role"] | null = null;
+    try {
+      role = await login(email.trim(), password);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Sign-in failed. Try again.";
+      setError(message);
+      toast.error(message);
+      setPending(false);
+      return;
     }
-  }, [state]);
 
-  const error = state.success ? null : state.message;
+    toast.success("Signed in");
+    const destination =
+      redirectTo &&
+      redirectTo.startsWith("/") &&
+      !redirectTo.startsWith("//")
+        ? redirectTo
+        : roleHome[role ?? "CUSTOMER"];
+
+    router.replace(destination);
+    router.refresh();
+  };
 
   return (
-    <form action={formAction} className="space-y-5 px-5 py-6 sm:px-6">
+    <form onSubmit={handleSubmit} className="space-y-5 px-5 py-6 sm:px-6">
       <div>
         <Label htmlFor="email" className={labelClass}>
           Email
@@ -41,6 +70,8 @@ export default function LoginForm({ redirectTo }: { redirectTo: string }) {
           required
           placeholder="you@example.com"
           className={inputClass}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
@@ -56,6 +87,8 @@ export default function LoginForm({ redirectTo }: { redirectTo: string }) {
           required
           placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
           className={inputClass}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
 

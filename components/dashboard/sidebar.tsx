@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { clientFetch } from "@/lib/client-fetch";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
 import { navByRole, sectionLabel } from "./nav";
 
 export function Sidebar({
@@ -21,19 +21,16 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { logout } = useAuth();
 
   const links = navByRole[role] ?? navByRole.CUSTOMER;
   const initial = user?.name?.trim().charAt(0).toUpperCase() ?? role.charAt(0);
 
   async function handleLogout() {
-    try {
-      await clientFetch("/api/auth/logout", { method: "POST" });
-      toast.success("Logged out");
-      router.push("/login");
-      router.refresh();
-    } catch {
-      toast.error("Could not log out. Try again.");
-    }
+    await logout();
+    toast.success("Logged out");
+    router.push("/login");
+    router.refresh();
   }
 
   return (

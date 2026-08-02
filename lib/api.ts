@@ -1,13 +1,20 @@
 import "server-only";
 import { cookies } from "next/headers";
 import type { ApiEnvelope } from "@/lib/types";
+import { BACKEND_URL, TOKEN_COOKIE } from "@/lib/backend";
 
-export const BACKEND_URL =
-  process.env.BACKEND_URL ?? "https://fixitnow-two.vercel.app";
+function decodeCookieValue(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
 
 export async function getAccessToken(): Promise<string | null> {
   const store = await cookies();
-  return store.get("accessToken")?.value ?? null;
+  const cookie = store.get(TOKEN_COOKIE)?.value;
+  return cookie ? decodeCookieValue(cookie) : null;
 }
 
 export function decodeJwtRole(token: string): string | null {

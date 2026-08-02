@@ -4,14 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { clientFetch } from "@/lib/client-fetch";
+import { apiFetch } from "@/lib/api-client";
+import { useAuth } from "@/contexts/auth-context";
 import type { Role } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, Input, Select } from "@/components/ui/input";
 
+const roleHome: Record<Role, string> = {
+  CUSTOMER: "/dashboard",
+  TECHNICIAN: "/technician-dashboard",
+  ADMIN: "/admin-dashboard",
+};
+
 export default function RegisterPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [role, setRole] = useState<Role>("CUSTOMER");
   const [form, setForm] = useState({
     name: "",
@@ -63,16 +71,13 @@ export default function RegisterPage() {
         : base;
 
     try {
-      await clientFetch("/api/auth/register", {
+      await apiFetch("/api/auth/register", {
         method: "POST",
         body: JSON.stringify(body),
       });
-      await clientFetch("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email: form.email, password: form.password }),
-      });
+      const loggedInRole = await login(form.email.trim(), form.password);
       toast.success("Account created successfully");
-      router.replace("/dashboard");
+      router.replace(roleHome[loggedInRole ?? "CUSTOMER"]);
       router.refresh();
     } catch (err) {
       const message =

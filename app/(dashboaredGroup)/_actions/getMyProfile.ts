@@ -2,12 +2,21 @@
 
 import { cookies } from "next/headers";
 import type { User } from "@/lib/types";
+import { BACKEND_URL, TOKEN_COOKIE } from "@/lib/backend";
 
 export const getMyProfile = async () => {
   const cookieStore = await cookies();
-  const token = cookieStore.get("accessToken")?.value;
+  const raw = cookieStore.get(TOKEN_COOKIE)?.value;
+  let token: string | null = null;
+  if (raw) {
+    try {
+      token = decodeURIComponent(raw);
+    } catch {
+      token = raw;
+    }
+  }
 
-  const res = await fetch(`${process.env.BACKEND_URL}/api/auth/me`, {
+  const res = await fetch(`${BACKEND_URL}/api/auth/me`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

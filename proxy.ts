@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { TOKEN_COOKIE } from "@/lib/backend";
 
 const AUTH_ROUTES = ["/login", "/register"];
 const PUBLIC_ROUTES = ["/", "/services"];
@@ -39,11 +40,26 @@ function decodeJwtRole(token: string): string | null {
   }
 }
 
+async function readAuth(request: NextRequest): Promise<{
+  token: string | null;
+  role: string | null;
+}> {
+  const raw = request.cookies.get(TOKEN_COOKIE)?.value;
+  let token: string | null = null;
+  if (raw) {
+    try {
+      token = decodeURIComponent(raw);
+    } catch {
+      token = raw;
+    }
+  }
+  return { token, role: token ? decodeJwtRole(token) : null };
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const accessToken = request.cookies.get("accessToken")?.value;
-  const role = accessToken ? decodeJwtRole(accessToken) : null;
+  const { token: accessToken, role } = await readAuth(request);
 
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
   const isPublicRoute = PUBLIC_ROUTES.some(
@@ -58,7 +74,7 @@ export async function proxy(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     const response = NextResponse.redirect(loginUrl);
-    response.cookies.set("accessToken", "", accessCookieOptions);
+    response.cookies.set(TOKEN_COOKIE, "", accessCookieOptions);
     return response;
   }
 
