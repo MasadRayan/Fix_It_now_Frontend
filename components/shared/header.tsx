@@ -4,7 +4,7 @@ import { MobileNav } from "./mobile-nav";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "#services", label: "Services" },
+  { href: "/services", label: "Services" },
   { href: "#how", label: "How it works" },
   { href: "#pros", label: "Technicians" },
 ];

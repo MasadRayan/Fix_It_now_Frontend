@@ -137,10 +137,46 @@ body {
   animation: stamp-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3) 0.4s both;
 }
 
+@keyframes punch-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-punch {
+  animation: punch-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+
+@keyframes punch-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-punch-ring {
+  animation: punch-ring 1.1s ease-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-ticket,
-  .animate-stamp {
+  .animate-stamp,
+  .animate-punch,
+  .animate-punch-ring {
     animation: none;
   }
 }
