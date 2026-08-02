@@ -1,32 +1,29 @@
-"use server";
-
-import { revalidateTag } from "next/cache";
+import "server-only";
 import { getAccessToken } from "@/lib/api";
 import { BACKEND_URL } from "@/lib/backend";
-import { BOOKINGS_CACHE_TAG } from "./getMyBookings";
 
-export interface CancelBookingResult {
+export interface MutationResult<T = unknown> {
   success: boolean;
   message: string;
+  data?: T;
 }
 
-export async function cancelBooking(
-  bookingId: string,
-  cancelReason?: string
-): Promise<CancelBookingResult> {
+export async function mutateBackend<T = unknown>(
+  path: string,
+  method: "POST" | "PATCH" | "PUT",
+  body: unknown
+): Promise<MutationResult<T>> {
   const token = await getAccessToken();
 
   let res: Response;
   try {
-    res = await fetch(`${BACKEND_URL}/api/bookings/${bookingId}/cancel`, {
-      method: "PATCH",
+    res = await fetch(`${BACKEND_URL}${path}`, {
+      method,
       headers: {
         "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify({
-        cancelReason: cancelReason?.trim() || undefined,
-      }),
+      body: JSON.stringify(body),
       cache: "no-store",
     });
   } catch {
@@ -40,17 +37,19 @@ export async function cancelBooking(
     success: boolean;
     statusCode: number;
     message: string;
-    data?: unknown;
+    data?: T;
   } | null;
 
   if (!res.ok || !result?.success) {
     return {
       success: false,
-      message: result?.message ?? "Cancelling the booking failed. Try again.",
+      message: result?.message ?? "Something went wrong. Try again.",
     };
   }
 
-  revalidateTag(BOOKINGS_CACHE_TAG, { expire: 0 });
-
-  return { success: true, message: result.message ?? "Booking cancelled." };
+  return {
+    success: true,
+    message: result.message ?? "Done.",
+    data: result.data,
+  };
 }
