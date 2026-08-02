@@ -1,10 +1,21 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const AUTH_ROUTES = ["/login", "/register"];
+const PUBLIC_ROUTES = ["/", "/services"];
+
 const roleRequired: Record<string, string> = {
-  "/dashboard/technician": "TECHNICIAN",
-  "/dashboard/customer": "CUSTOMER",
-  "/dashboard/admin": "ADMIN",
+  "/dashboard": "CUSTOMER",
+  "/technician-dashboard": "TECHNICIAN",
+  "/admin-dashboard": "ADMIN",
+};
+
+const accessCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  path: "/",
+  maxAge: 0,
 };
 
 function decodeJwtRole(token: string): string | null {
@@ -22,17 +33,30 @@ function decodeJwtRole(token: string): string | null {
   }
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (!pathname.startsWith("/dashboard")) {
-    return NextResponse.next();
+  const accessToken = request.cookies.get("accessToken")?.value;
+  const role = accessToken ? decodeJwtRole(accessToken) : null;
+
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+  const isPublicRoute = PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+
+  if (accessToken && role && isAuthRoute) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  const token = request.cookies.get("accessToken")?.value;
-  const role = token ? decodeJwtRole(token) : null;
+  if (accessToken && !role) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    const response = NextResponse.redirect(loginUrl);
+    response.cookies.set("accessToken", "", accessCookieOptions);
+    return response;
+  }
 
-  if (!role) {
+  if (!accessToken && !isPublicRoute && !isAuthRoute) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
@@ -50,5 +74,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
 };

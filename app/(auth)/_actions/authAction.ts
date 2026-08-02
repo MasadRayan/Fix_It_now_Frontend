@@ -40,7 +40,7 @@ export async function loginAction(
     success: boolean;
     statusCode: number;
     message: string;
-    data?: { accessToken: string; refreshToken: string };
+    data?: { accessToken: string };
   } | null;
 
   if (!result?.success || !result.data?.accessToken) {
@@ -58,13 +58,6 @@ export async function loginAction(
     path: "/",
     maxAge: 60 * 60 * 24,
   });
-  cookieStore.set("refreshToken", result.data.refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
 
   if (
     redirectTo &&
@@ -79,9 +72,9 @@ export async function loginAction(
     | null;
   const role = decodedToken?.role;
 
-  if (role === "CUSTOMER") redirect("/dashboard/customer");
-  if (role === "TECHNICIAN") redirect("/dashboard/technician");
-  if (role === "ADMIN") redirect("/dashboard/admin");
+  if (role === "CUSTOMER") redirect("/dashboard");
+  if (role === "TECHNICIAN") redirect("/technician-dashboard");
+  if (role === "ADMIN") redirect("/admin-dashboard");
 
   redirect("/dashboard");
 }
