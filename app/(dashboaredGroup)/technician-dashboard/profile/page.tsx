@@ -11,11 +11,11 @@ async function loadProfile(): Promise<User | null> {
   }
 }
 
-export default async function UserProfilePage() {
+export default async function TechnicianProfilePage() {
   const user = await loadProfile();
 
   if (!user) {
-    return <RecordError />;
+    return <RecordError retryHref="/technician-dashboard/profile" />;
   }
 
   return <RecordCard user={user} />;

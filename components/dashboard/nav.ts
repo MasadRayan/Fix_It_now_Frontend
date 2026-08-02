@@ -19,6 +19,7 @@ export const navByRole: Record<string, NavLink[]> = {
   ],
   ADMIN: [
     { href: "/admin-dashboard", label: "Overview" },
+    { href: "/admin-dashboard/profile", label: "Profile" },
     { href: "/admin-dashboard/users", label: "Users" },
     { href: "/admin-dashboard/bookings", label: "Bookings" },
     { href: "/admin-dashboard/categories", label: "Categories" },
