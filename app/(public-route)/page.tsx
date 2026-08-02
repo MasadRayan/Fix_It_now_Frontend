@@ -1,7 +1,6 @@
 import { Hero } from "./_components/home/hero";
 import { Categories } from "./_components/home/categories";
 import { HowItWorks } from "./_components/home/how-it-works";
-import { Services } from "./_components/home/services";
 import { Pros } from "./_components/home/pros";
 import { TrustStrip } from "./_components/home/trust-strip";
 import { Cta } from "./_components/home/cta";
@@ -13,7 +12,6 @@ export default function Home() {
         <Hero />
         <Categories />
         <HowItWorks />
-        <Services />
         <Pros />
         <TrustStrip />
         <Cta />

@@ -5,19 +5,6 @@ export interface HomeCategory {
   count: number;
 }
 
-export interface HomeService {
-  serial: string;
-  category: string;
-  title: string;
-  description: string;
-  durationMins: number;
-  price: number;
-  technician: string;
-  rating: number;
-  reviews: number;
-  area: string;
-}
-
 export interface HomePro {
   name: string;
   initials: string;
@@ -57,86 +44,5 @@ export const tickerItems = [
   "Pest Control",
   "Gas Stove Repair",
   "Water Heater",
-];
-
-export const services: HomeService[] = [
-  {
-    serial: "FIN-1042",
-    category: "AC & Cooling",
-    title: "AC deep clean & gas refill",
-    description:
-      "Full strip-down clean, coil wash and refrigerant top-up. Unit running cool again the same day.",
-    durationMins: 90,
-    price: 450,
-    technician: "Rafiq Uddin",
-    rating: 4.9,
-    reviews: 214,
-    area: "Mirpur 10",
-  },
-  {
-    serial: "FIN-1077",
-    category: "Plumbing",
-    title: "Leaking pipe repair",
-    description:
-      "Locate and fix the leak, replace worn fittings and reseal joints. Mess cleaned up before we leave.",
-    durationMins: 60,
-    price: 350,
-    technician: "Karim Hossain",
-    rating: 4.8,
-    reviews: 156,
-    area: "Dhanmondi",
-  },
-  {
-    serial: "FIN-1093",
-    category: "Electrical",
-    title: "Complete wiring check",
-    description:
-      "Full-home circuit audit, trip-source hunting and safe switchboard work where it counts.",
-    durationMins: 120,
-    price: 600,
-    technician: "Jahir Ahmed",
-    rating: 4.7,
-    reviews: 98,
-    area: "Uttara",
-  },
-  {
-    serial: "FIN-1101",
-    category: "Plumbing",
-    title: "Bathroom fitting & tap install",
-    description:
-      "Basin, mixer and tap installation with proper sealing. No more wobbly fittings or drip-drip-drip.",
-    durationMins: 45,
-    price: 250,
-    technician: "Sabbir Khan",
-    rating: 4.6,
-    reviews: 87,
-    area: "Banani",
-  },
-  {
-    serial: "FIN-1116",
-    category: "Appliance Repair",
-    title: "Gas stove repair",
-    description:
-      "Flame, burner and regulator faults fixed, then safety-checked before we leave so you cook without worry.",
-    durationMins: 45,
-    price: 300,
-    technician: "Fahim Hasan",
-    rating: 4.8,
-    reviews: 131,
-    area: "Gulshan",
-  },
-  {
-    serial: "FIN-1120",
-    category: "Cleaning",
-    title: "Deep home cleaning",
-    description:
-      "Kitchen grease, bathroom grime and floor-to-ceiling dust. Two-person crew, and you don't lift a finger.",
-    durationMins: 90,
-    price: 500,
-    technician: "Mitu Akter",
-    rating: 4.9,
-    reviews: 172,
-    area: "Mohammadpur",
-  },
 ];
 
