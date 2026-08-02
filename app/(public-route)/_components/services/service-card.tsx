@@ -76,7 +76,7 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
             asChild
             className="mt-3 block w-full rounded-sm bg-ink px-3 py-2 text-center font-display text-sm font-bold text-bone group-hover:bg-safety group-hover:text-ink hover:bg-safety hover:text-ink"
           >
-            <Link href={`/services/${service.id}`}>Book this</Link>
+            <Link href={`/services/${service.id}`}>Details</Link>
           </Button>
         </div>
       </div>
