@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { getAccessToken } from "@/lib/api";
 import { BACKEND_URL } from "@/lib/backend";
-import { BOOKINGS_CACHE_TAG } from "./getMyBookings";
+import { BOOKINGS_CACHE_TAG } from "./cacheTags";
 
 export interface CancelBookingResult {
   success: boolean;

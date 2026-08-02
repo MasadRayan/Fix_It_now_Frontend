@@ -4,8 +4,7 @@ import { unstable_cache } from "next/cache";
 import { getAccessToken, serverFetch } from "@/lib/api";
 import type { TechnicianListItem } from "@/lib/types";
 import { getMyProfile } from "./getMyProfile";
-
-export const TECHNICIAN_CACHE_TAG = "my-technician";
+import { TECHNICIAN_CACHE_TAG } from "./cacheTags";
 
 export const getMyTechnician = async (): Promise<TechnicianListItem | null> => {
   const user = await getMyProfile().catch(() => null);

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidateTag } from "next/cache";
 import type { AvailabilityRequest, TechnicianAvailability } from "@/lib/types";
 import { mutateBackend, type MutationResult } from "./mutate";
-import { TECHNICIAN_CACHE_TAG } from "./getMyTechnician";
+import { TECHNICIAN_CACHE_TAG } from "./cacheTags";
 
 const DAYS = [
   "MONDAY",

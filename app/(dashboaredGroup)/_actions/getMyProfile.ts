@@ -2,9 +2,8 @@
 
 import { unstable_cache } from "next/cache";
 import { getAccessToken, serverFetch } from "@/lib/api";
+import { PROFILE_CACHE_TAG } from "./cacheTags";
 import type { User } from "@/lib/types";
-
-export const PROFILE_CACHE_TAG = "my-profile";
 
 export const getMyProfile = async (): Promise<User> => {
   const token = await getAccessToken();

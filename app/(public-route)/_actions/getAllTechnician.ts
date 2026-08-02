@@ -18,8 +18,9 @@ const fetchTechnicians = async () => {
     return res.json();
 }
 
-export const getAllTechnician = unstable_cache(
-    fetchTechnicians,
-    ["getAllTechnician"],
-    { revalidate: 24 * 60 * 60 * 7 } // 7 days
-);
+export const getAllTechnician = async () =>
+    unstable_cache(
+        fetchTechnicians,
+        ["getAllTechnician"],
+        { revalidate: 24 * 60 * 60 * 7 } // 7 days
+    )();

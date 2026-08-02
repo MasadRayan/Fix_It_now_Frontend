@@ -30,8 +30,9 @@ const fetchServices = async (filters: GetAllServicesParams = {}) => {
     return res.json();
 }
 
-export const getAllServices = unstable_cache(
-    fetchServices,
-    ["getAllServices"],
-    { revalidate: 24 * 60 * 60 * 7 } // 7 days
-);
+export const getAllServices = async (filters: GetAllServicesParams = {}) =>
+    unstable_cache(
+        fetchServices,
+        ["getAllServices"],
+        { revalidate: 24 * 60 * 60 * 7 } // 7 days
+    )(filters);

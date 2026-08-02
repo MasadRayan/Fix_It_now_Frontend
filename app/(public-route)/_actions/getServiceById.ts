@@ -18,8 +18,9 @@ const fetchServiceById = async (id: string) => {
   return res.json();
 };
 
-export const getServiceById = unstable_cache(
-  fetchServiceById,
-  ["getServiceById"],
-  { revalidate: 24 * 60 * 60 * 7 } // 7 days
-);
+export const getServiceById = async (id: string) =>
+  unstable_cache(
+    fetchServiceById,
+    ["getServiceById"],
+    { revalidate: 24 * 60 * 60 * 7 } // 7 days
+  )(id);

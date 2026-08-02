@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidateTag } from "next/cache";
 import type { CreateServiceRequest, Service } from "@/lib/types";
 import { mutateBackend, type MutationResult } from "./mutate";
-import { TECHNICIAN_CACHE_TAG } from "./getMyTechnician";
+import { TECHNICIAN_CACHE_TAG } from "./cacheTags";
 
 const schema = z.object({
   title: z.string().trim().min(3, "Title must be at least 3 characters."),

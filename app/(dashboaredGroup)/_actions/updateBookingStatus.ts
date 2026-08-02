@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidateTag } from "next/cache";
 import type { UpdateBookingStatusRequest } from "@/lib/types";
 import { mutateBackend, type MutationResult } from "./mutate";
-import { BOOKINGS_CACHE_TAG } from "./getMyBookings";
+import { BOOKINGS_CACHE_TAG } from "./cacheTags";
 
 const schema = z.enum(["ACCEPTED", "DECLINED", "IN_PROGRESS", "COMPLETED"]);
 

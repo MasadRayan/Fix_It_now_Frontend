@@ -2,9 +2,8 @@
 
 import { unstable_cache } from "next/cache";
 import { getAccessToken, serverFetch } from "@/lib/api";
+import { BOOKINGS_CACHE_TAG } from "./cacheTags";
 import type { BookingListItem } from "@/lib/types";
-
-export const BOOKINGS_CACHE_TAG = "my-bookings";
 
 export const getMyBookings = async (): Promise<BookingListItem[]> => {
   const token = await getAccessToken();
