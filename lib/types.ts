@@ -311,6 +311,35 @@ export interface ServiceListItem extends Service {
   _count?: { bookings: number };
 }
 
+export interface ServiceReview {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  customer: { name: string; avatarUrl: string | null };
+}
+
+export interface ServiceDetails extends Service {
+  category?: Pick<Category, "name" | "description" | "iconUrl">;
+  technician?: {
+    user: {
+      name: string;
+      avatarUrl: string | null;
+      email: string;
+      phone: string;
+    };
+    bio: string | null;
+    skills: string[];
+    experienceYrs: number;
+    location: string | null;
+    avgRating: number;
+    totalReviews: number;
+    isVerified: boolean;
+  };
+  bookings?: Array<{ review?: ServiceReview | null }>;
+  _count?: { bookings: number };
+}
+
 export interface CategoryListItem extends Category {
   services?: Array<{ title: string; description: string; price: string }>;
   _count?: { services: number };
