@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { serverFetch } from "@/lib/api";
+import { serverFetch, decodeJwtRole } from "@/lib/api";
 import { routeError } from "@/lib/http";
-import { setSessionCookies, decodeJwtRole } from "@/lib/session";
 import type { AuthTokens } from "@/lib/types";
 
 export async function POST(request: Request) {
@@ -15,7 +14,20 @@ export async function POST(request: Request) {
     const role = decodeJwtRole(tokens.accessToken) ?? "CUSTOMER";
 
     const response = NextResponse.json({ data: { role } });
-    setSessionCookies(response, tokens.accessToken, role);
+    response.cookies.set("accessToken", tokens.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24,
+    });
+    response.cookies.set("refreshToken", tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
     return response;
   } catch (error) {
     return routeError(error);

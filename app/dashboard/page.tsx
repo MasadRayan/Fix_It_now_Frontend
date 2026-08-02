@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getRole } from "@/lib/session";
+import { getRole } from "@/lib/api";
 
 export default async function DashboardIndex() {
   const role = await getRole();

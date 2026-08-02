@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getRole } from "@/lib/session";
+import { getRole } from "@/lib/api";
 import { DashboardShell } from "@/components/dashboard-shell";
 
 export default async function DashboardLayout({

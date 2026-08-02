@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
-import { clearSessionCookies } from "@/lib/session";
 
 export async function POST() {
   const response = NextResponse.json({ data: { message: "Logged out" } });
-  clearSessionCookies(response);
+  response.cookies.set("accessToken", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+  response.cookies.set("refreshToken", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
   return response;
 }

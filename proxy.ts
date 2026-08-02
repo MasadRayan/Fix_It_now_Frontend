@@ -1,13 +1,26 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const ROLE_COOKIE = "fixit_role";
-
 const roleRequired: Record<string, string> = {
   "/dashboard/technician": "TECHNICIAN",
   "/dashboard/customer": "CUSTOMER",
   "/dashboard/admin": "ADMIN",
 };
+
+function decodeJwtRole(token: string): string | null {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return null;
+    const b64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = b64.padEnd(Math.ceil(b64.length / 4) * 4, "=");
+    const decoded = JSON.parse(
+      Buffer.from(padded, "base64").toString("utf-8")
+    ) as { role?: string };
+    return decoded.role ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,7 +29,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const role = request.cookies.get(ROLE_COOKIE)?.value;
+  const token = request.cookies.get("accessToken")?.value;
+  const role = token ? decodeJwtRole(token) : null;
 
   if (!role) {
     const loginUrl = new URL("/login", request.url);

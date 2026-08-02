@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { serverFetch } from "@/lib/api";
 import { routeError } from "@/lib/http";
-import { clearSessionCookies } from "@/lib/session";
 import type { User } from "@/lib/types";
 
 export async function POST(request: Request) {

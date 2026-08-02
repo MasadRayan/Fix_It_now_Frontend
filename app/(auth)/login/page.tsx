@@ -1,97 +1,74 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { toast } from "sonner";
-import { clientFetch } from "@/lib/client-fetch";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, Input } from "@/components/ui/input";
+import LoginForm from "../_components/LoginForm";
 
-export default function LoginPage({
+export const metadata: Metadata = {
+  title: "Sign in \u2014 FixItNow",
+};
+
+type LoginSearchParams = Promise<{ next?: string }>;
+
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: LoginSearchParams;
 }) {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      const { next } = await searchParams;
-      const res = await clientFetch<{ role: string }>("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-      });
-      toast.success("Logged in successfully");
-      router.replace(next || "/dashboard");
-      router.refresh();
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Login failed. Try again.";
-      setError(message);
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const params = await searchParams;
+  const next = typeof params.next === "string" ? params.next : "";
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Log in</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Field label="Email" htmlFor="email">
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Field>
-          <Field label="Password" htmlFor="password">
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Field>
-          {error && (
-            <p className="rounded-md bg-red-50 p-2 text-sm text-red-700">
-              {error}
+    <section className="grid min-h-[80dvh] bg-ticket md:grid-cols-2">
+      <div className="hero-grid flex items-center border-b-2 border-dashed border-bone/15 bg-board px-6 py-16 text-bone sm:px-10 md:border-b-0 md:border-r-2 md:border-r-dashed md:border-r-bone/15">
+        <div className="mx-auto w-full max-w-md">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-safety">
+            {"// FixItNow \u00b7 member sign-in"}
+          </p>
+          <h1 className="mt-4 font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl">
+            Punch in.
+          </h1>
+          <p className="mt-5 max-w-sm text-lg leading-relaxed text-bone/75">
+            Your tickets, jobs and crew are waiting. Sign in and get back to
+            the board.
+          </p>
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wider text-bone/60">
+            <li className="flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-safety" />
+              Vetted pros
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-safety" />
+              Fixed prices
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-safety" />
+              Booked in 2 min
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center px-6 py-16 sm:px-10">
+        <div className="w-full max-w-md border-2 border-ink/80 bg-ticket-hi">
+          <div className="flex items-center justify-between gap-4 border-b-2 border-dashed border-ink/25 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-steel sm:px-6">
+            <span>{"// Member sign-in"}</span>
+            <span aria-hidden>{"\u25cb"} Form 01</span>
+          </div>
+
+          <LoginForm redirectTo={next} />
+
+          <div className="border-t-2 border-dashed border-ink/25 px-5 py-4 sm:px-6">
+            <p className="font-mono text-[11px] uppercase tracking-wider text-steel">
+              New to FixItNow?{" "}
+              <Link
+                href="/register"
+                className="font-bold text-ink underline underline-offset-4 transition-colors hover:text-safety"
+              >
+                Create an account
+              </Link>
             </p>
-          )}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading && (
-              <span
-                aria-hidden
-                className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-              />
-            )}
-            Log in
-          </Button>
-        </form>
-        <p className="mt-4 text-center text-sm text-zinc-500">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-medium text-zinc-900 underline">
-            Register
-          </Link>
-        </p>
-      </CardContent>
-    </Card>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
