@@ -63,7 +63,7 @@ export function JobLedger({
                   </div>
                   <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
                     <Stars rating={review.rating} />
-                    <span className="rotate-[-6deg] rounded-none border-2 border-safety/70 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-safety">
+                    <span className="-rotate-6 rounded-none border-2 border-safety/70 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-safety">
                       done {"\u2713"}
                     </span>
                   </div>
