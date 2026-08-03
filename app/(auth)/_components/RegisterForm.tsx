@@ -186,7 +186,7 @@ export default function RegisterForm() {
                     name="bio"
                     rows={3}
                     placeholder="What you do and how long you've done it"
-                    className={cn(slipInputClass, "min-h-[80px] resize-y")}
+                    className={cn(slipInputClass, "min-h-20 resize-y")}
                   />
                 </div>
                 <div className="sm:col-span-2">
