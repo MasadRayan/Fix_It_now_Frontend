@@ -29,7 +29,7 @@ export function Hero() {
               size="lg"
               className="rounded-md font-display text-base font-bold"
             >
-              <Link href="#services">Browse services</Link>
+              <Link href="/services">Browse services</Link>
             </Button>
             <Button
               asChild

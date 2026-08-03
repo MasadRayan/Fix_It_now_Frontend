@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { ServiceDetails } from "@/lib/types";
 import { formatBDT } from "@/lib/utils";
+import { BookServiceButton } from "./book-service-button";
 
 export function JobTicket({
   service,
@@ -79,12 +79,14 @@ export function JobTicket({
               set before the work starts
             </p>
           </div>
-          <Link
-            href={`/login?next=${encodeURIComponent(`/services/${service.id}`)}`}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-sm border-2 border-ink bg-ink px-6 font-display text-base font-bold text-bone transition-colors hover:bg-safety hover:text-ink"
-          >
-            Book this job <span aria-hidden>{"\u2192"}</span>
-          </Link>
+          <BookServiceButton
+            serviceId={service.id}
+            title={service.title}
+            price={service.price}
+            durationMins={service.durationMins}
+            location={service.technician?.location ?? null}
+            serial={serial}
+          />
         </div>
       </div>
     </article>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import type { BookingListItem } from "@/lib/types";
 import { CancelBookingDialog } from "./cancel-booking-dialog";
+import { createPayment } from "../_actions/createPayment";
 
 const primaryBtn =
   "inline-flex items-center justify-center rounded-sm border-2 border-ink bg-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-bone transition-colors hover:bg-safety hover:text-ink disabled:pointer-events-none disabled:opacity-50";
@@ -12,10 +13,19 @@ const dangerBtn =
 
 export function BookingActions({ booking }: { booking: BookingListItem }) {
   const [cancelOpen, setCancelOpen] = useState(false);
-  const { status } = booking;
+  const [pendingPayment, startPayment] = useTransition();
+  const { status, payment } = booking;
+  const isConfirming = payment?.status === "PENDING";
 
-  function showStub(message: string) {
-    toast.info(message);
+  function handlePay() {
+    startPayment(async () => {
+      const res = await createPayment(booking.id);
+      if (res.success && res.data?.paymentURL) {
+        window.location.href = res.data.paymentURL;
+      } else {
+        toast.error(res.message);
+      }
+    });
   }
 
   return (
@@ -25,9 +35,14 @@ export function BookingActions({ booking }: { booking: BookingListItem }) {
           <button
             type="button"
             className={primaryBtn}
-            onClick={() => showStub("Secure checkout is coming in the next phase.")}
+            onClick={handlePay}
+            disabled={pendingPayment || isConfirming}
           >
-            Pay now
+            {isConfirming
+              ? "Confirming…"
+              : pendingPayment
+                ? "Opening checkout…"
+                : "Pay now"}
           </button>
         )}
 
@@ -47,7 +62,9 @@ export function BookingActions({ booking }: { booking: BookingListItem }) {
           <button
             type="button"
             className={primaryBtn}
-            onClick={() => showStub("Leaving a review is coming in the next phase.")}
+            onClick={() =>
+              toast.info("Leaving a review is coming in the next phase.")
+            }
           >
             Leave review
           </button>
