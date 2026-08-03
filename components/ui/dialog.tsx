@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export function Dialog({
   open,
@@ -20,38 +21,44 @@ export function Dialog({
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    const priorFocus = document.activeElement as HTMLElement | null;
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      priorFocus?.focus?.();
     };
   }, [open, onClose]);
 
   if (!open) return null;
 
-  return (
+  const dialog = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/50"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={title}
     >
-      <div
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close dialog"
-            className="flex size-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100"
-          >
-            ✕
-          </button>
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div
+          className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold">{title}</h2>
+            <button
+              onClick={onClose}
+              aria-label="Close dialog"
+              className="flex size-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100"
+            >
+              ✕
+            </button>
+          </div>
+          {children}
         </div>
-        {children}
       </div>
     </div>
   );
+
+  return typeof document === "undefined" ? null : createPortal(dialog, document.body);
 }

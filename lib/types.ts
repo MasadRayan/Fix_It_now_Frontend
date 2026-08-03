@@ -368,6 +368,7 @@ export interface BookingListItem extends Booking {
   };
   customer?: { name: string; phone: string; email: string };
   payment?: { status: PaymentStatus; amount: string } | null;
+  review?: { rating: number; comment: string | null } | null;
 }
 
 export interface PaymentListItem extends Payment {
