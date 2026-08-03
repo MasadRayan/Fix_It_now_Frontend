@@ -5,7 +5,8 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
-import { getToken } from "@/lib/api-client";
+import { ApiClientError, apiFetch, getToken } from "@/lib/api-client";
+import type { User } from "@/lib/types";
 import { formatBDT } from "@/lib/utils";
 import { createBooking } from "../../_actions/createBooking";
 
@@ -19,6 +20,10 @@ function minDate(): string {
   const now = new Date();
   const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
   return local.toISOString().slice(0, 10);
+}
+
+function loginHref(serviceId: string): string {
+  return `/login?next=${encodeURIComponent(`/services/${serviceId}`)}`;
 }
 
 export function BookServiceButton({
@@ -37,7 +42,7 @@ export function BookServiceButton({
   serial: string;
 }) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, status, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -45,13 +50,8 @@ export function BookServiceButton({
   const [time, setTime] = useState("");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [loadingProfile, setLoadingProfile] = useState(false);
   const touched = useRef(false);
-
-  useEffect(() => {
-    if (open && !touched.current && user?.address) {
-      setAddress(user.address);
-    }
-  }, [open, user]);
 
   useEffect(() => {
     if (!open) return;
@@ -66,17 +66,29 @@ export function BookServiceButton({
     };
   }, [open]);
 
-  function handleOpen() {
-    if (!getToken()) {
-      router.push(
-        `/login?next=${encodeURIComponent(`/services/${serviceId}`)}`,
-      );
+  async function handleOpen() {
+    if (!getToken() || status === "unauthenticated") {
+      router.push(loginHref(serviceId));
       return;
     }
     touched.current = false;
     setAddress(user?.address ?? "");
     setError(null);
     setOpen(true);
+    setLoadingProfile(true);
+    try {
+      const me = await apiFetch<User>("/api/auth/me");
+      if (!touched.current) {
+        setAddress(me.address ?? "");
+      }
+    } catch (err) {
+      if (err instanceof ApiClientError && err.status === 401) {
+        setOpen(false);
+        router.push(loginHref(serviceId));
+      }
+    } finally {
+      setLoadingProfile(false);
+    }
   }
 
   function handleClose() {
@@ -127,6 +139,11 @@ export function BookServiceButton({
         setOpen(false);
         router.push("/dashboard/bookings");
         router.refresh();
+      } else if (res.statusCode === 401) {
+        setOpen(false);
+        await logout();
+        toast.error(res.message);
+        router.push(loginHref(serviceId));
       } else {
         setError(res.message);
       }
@@ -243,11 +260,17 @@ export function BookServiceButton({
                     className={inputClass}
                     required
                   />
-                  {location && (
+                  {loadingProfile ? (
                     <p className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-steel/70">
-                      Must include “{location}” — the technician only works
-                      there.
+                      Pulling your saved address…
                     </p>
+                  ) : (
+                    location && (
+                      <p className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-steel/70">
+                        Must include “{location}” — the technician only works
+                        there.
+                      </p>
+                    )
                   )}
                 </div>
 
@@ -285,16 +308,22 @@ export function BookServiceButton({
 
                 <button
                   type="submit"
-                  disabled={pending}
+                  disabled={pending || loadingProfile}
                   className="flex w-full items-center justify-center gap-2 rounded-none border-2 border-ink bg-ink px-4 py-3 font-display text-base font-bold text-bone transition-colors hover:bg-safety hover:text-ink disabled:pointer-events-none disabled:opacity-60"
                 >
-                  {pending && (
-                    <span
-                      aria-hidden
-                      className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-                    />
+                  {pending ? (
+                    <>
+                      <span
+                        aria-hidden
+                        className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+                      />
+                      Booking…
+                    </>
+                  ) : loadingProfile ? (
+                    "Checking your account…"
+                  ) : (
+                    "Book this job"
                   )}
-                  {pending ? "Booking…" : "Book this job"}
                 </button>
               </form>
             </div>

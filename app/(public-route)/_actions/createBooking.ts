@@ -7,6 +7,7 @@ import { backendFetch } from "@/lib/fetch-backend";
 export interface CreateBookingResult {
   success: boolean;
   message: string;
+  statusCode?: number;
   data?: { id: string };
 }
 
@@ -38,7 +39,8 @@ export async function createBooking(input: {
   } catch {
     return {
       success: false,
-      message: "Could not reach the server. Check your connection and try again.",
+      message:
+        "Could not reach the server. Check your connection and try again.",
     };
   }
 
@@ -52,11 +54,13 @@ export async function createBooking(input: {
   if (!res.ok || !result?.success) {
     const status = result?.statusCode ?? res.status;
     let message = result?.message ?? "Booking failed. Try again.";
-    if (status === 400 && !result?.message) {
+    if (status === 401) {
+      message = "Your session has expired — please sign in again.";
+    } else if (status === 400 && !result?.message) {
       message =
         "Couldn't book that slot. Check the time and address, then try again.";
     }
-    return { success: false, message };
+    return { success: false, message, statusCode: status };
   }
 
   return {
