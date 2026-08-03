@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { getAccessToken } from "@/lib/api";
 import { BACKEND_URL } from "@/lib/backend";
 import { backendFetch } from "@/lib/fetch-backend";
@@ -14,7 +14,8 @@ export interface CreateReviewResult {
 export async function createReview(
   bookingId: string,
   rating: number,
-  comment?: string
+  comment?: string,
+  serviceId?: string
 ): Promise<CreateReviewResult> {
   const token = await getAccessToken();
 
@@ -59,6 +60,9 @@ export async function createReview(
 
   updateTag("public-services");
   updateTag("public-reviews");
+  if (serviceId) {
+    revalidatePath(`/services/${serviceId}`);
+  }
 
   return { success: true, message: result.message ?? "Review posted." };
 }

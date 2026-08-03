@@ -42,7 +42,7 @@ export function JobLedger({
         </h2>
         <p className="mt-3 text-steel">
           {dispatched} job{dispatched === 1 ? "" : "s"} dispatched for this
-          ticket \u00b7 {reviews.length} reviewed by the people who booked it.
+          ticket {reviews.length} reviewed by the people who booked it.
         </p>
 
         {reviews.length > 0 ? (

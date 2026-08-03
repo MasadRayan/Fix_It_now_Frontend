@@ -56,7 +56,12 @@ export function ReviewDialog({
       return;
     }
     startTransition(async () => {
-      const res = await createReview(booking.id, rating, comment.trim());
+      const res = await createReview(
+        booking.id,
+        rating,
+        comment.trim(),
+        booking.service?.id
+      );
       if (res.success) {
         toast.success(res.message);
         onReviewed();
