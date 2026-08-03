@@ -9,14 +9,16 @@ export function Pagination({
   totalPages: number;
   makeHref: (page: number) => string;
 }) {
-  if (totalPages <= 1) return null;
+  const safeTotalPages = Math.max(totalPages, 1);
+  const canGoPrev = currentPage > 1;
+  const canGoNext = currentPage < safeTotalPages;
 
   return (
     <nav
       className="mt-8 flex items-center justify-center gap-2 font-mono text-xs uppercase tracking-widest"
       aria-label="Pagination"
     >
-      {currentPage > 1 ? (
+      {canGoPrev ? (
         <Link
           href={makeHref(currentPage - 1)}
           className="rounded-none border-2 border-ink/70 bg-ticket px-3 py-2 text-ink transition-colors hover:bg-ticket"
@@ -26,10 +28,10 @@ export function Pagination({
       ) : (
         <span className="px-3 py-2 text-steel/50">‹ Prev</span>
       )}
-      <span className="px-3 py-2 text-steel">
-        Page {currentPage} of {totalPages}
+        <span className="px-3 py-2 text-steel">
+        Page {currentPage} of {safeTotalPages}
       </span>
-      {currentPage < totalPages ? (
+      {canGoNext ? (
         <Link
           href={makeHref(currentPage + 1)}
           className="rounded-none border-2 border-ink/70 bg-ticket px-3 py-2 text-ink transition-colors hover:bg-ticket"
