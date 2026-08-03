@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
     const role = decodeJwtRole(tokens.accessToken) ?? "CUSTOMER";
 
-    const response = NextResponse.json({ data: { role } });
+    const response = NextResponse.json({ data: { ...tokens, role } });
     response.cookies.set("accessToken", tokens.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

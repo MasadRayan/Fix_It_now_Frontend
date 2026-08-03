@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getAccessToken } from "@/lib/api";
 import { BACKEND_URL } from "@/lib/backend";
 import { backendFetch } from "@/lib/fetch-backend";
@@ -63,9 +64,5 @@ export async function createBooking(input: {
     return { success: false, message, statusCode: status };
   }
 
-  return {
-    success: true,
-    message: result.message ?? "Booking created.",
-    data: result.data,
-  };
+  redirect("/dashboard/bookings");
 }

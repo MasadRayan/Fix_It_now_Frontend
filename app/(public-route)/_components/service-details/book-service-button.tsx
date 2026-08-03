@@ -8,7 +8,10 @@ import { useAuth } from "@/contexts/auth-context";
 import { ApiClientError, apiFetch, getToken } from "@/lib/api-client";
 import type { User } from "@/lib/types";
 import { formatBDT } from "@/lib/utils";
-import { createBooking } from "../../_actions/createBooking";
+import {
+  createBooking,
+  type CreateBookingResult,
+} from "../../_actions/createBooking";
 
 const inputClass =
   "w-full rounded-none border-2 border-ink/70 bg-ticket px-3 py-2.5 font-mono text-sm text-ink placeholder:text-steel/60 focus:border-safety focus:outline-none";
@@ -128,25 +131,26 @@ export function BookServiceButton({
     }
 
     startTransition(async () => {
-      const res = await createBooking({
-        serviceId,
-        scheduledAt: scheduledAt.toISOString(),
-        address: trimmedAddress,
-        notes: notes.trim() || undefined,
-      });
-      if (res.success) {
-        toast.success(res.message);
-        setOpen(false);
-        router.push("/dashboard/bookings");
-        router.refresh();
-      } else if (res.statusCode === 401) {
+      let res: CreateBookingResult | undefined;
+      try {
+        res = await createBooking({
+          serviceId,
+          scheduledAt: scheduledAt.toISOString(),
+          address: trimmedAddress,
+          notes: notes.trim() || undefined,
+        });
+      } catch {
+        return;
+      }
+      if (!res) return;
+      if (res.statusCode === 401) {
         setOpen(false);
         await logout();
         toast.error(res.message);
         router.push(loginHref(serviceId));
-      } else {
-        setError(res.message);
+        return;
       }
+      setError(res.message);
     });
   }
 

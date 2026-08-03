@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { usePathname } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { apiFetch, setToken } from "@/lib/api-client";
 import type { AuthTokens, User } from "@/lib/types";
 
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const [user, setUserState] = useState<User | null | undefined>(undefined);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ email, password }),
       });
       setToken(tokens.accessToken);
+      queryClient.clear();
       let role: User["role"] | null = null;
       try {
         const me = await apiFetch<User>("/api/auth/me");
@@ -75,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return role;
     },
-    []
+    [queryClient]
   );
 
   const logout = useCallback(async () => {
@@ -86,7 +89,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setToken(null);
     setUserState(null);
-  }, []);
+    queryClient.clear();
+  }, [queryClient]);
 
   const value = useMemo<AuthContextValue>(() => {
     const status: AuthStatus =

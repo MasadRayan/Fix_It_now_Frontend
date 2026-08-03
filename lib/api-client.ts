@@ -1,4 +1,4 @@
-import { BACKEND_URL, TOKEN_COOKIE, TOKEN_KEY } from "./backend";
+import { TOKEN_COOKIE, TOKEN_KEY } from "./backend";
 
 export { TOKEN_KEY, TOKEN_COOKIE };
 
@@ -16,6 +16,7 @@ interface Envelope<T> {
   success?: boolean;
   message?: string;
   errorDetails?: string;
+  error?: string;
   data?: T;
 }
 
@@ -49,6 +50,17 @@ const MAX_ATTEMPTS = 3;
 const ATTEMPT_TIMEOUT_MS = 5000;
 const RETRY_DELAY_MS = 150;
 
+function isTimeoutError(error: unknown): boolean {
+  return (
+    error instanceof DOMException
+      ? error.name === "TimeoutError"
+      : (error as { name?: string })?.name === "TimeoutError" ||
+        /timed out|aborted/i.test(
+          (error as { message?: string })?.message ?? ""
+        )
+  );
+}
+
 function isNetworkError(error: unknown): boolean {
   const cause = (error as { cause?: { code?: string } })?.cause;
   const code = cause?.code;
@@ -57,7 +69,7 @@ function isNetworkError(error: unknown): boolean {
       code
     );
   }
-  return error instanceof TypeError;
+  return error instanceof TypeError || isTimeoutError(error);
 }
 
 export async function apiFetch<T = unknown>(
@@ -76,11 +88,15 @@ export async function apiFetch<T = unknown>(
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
-      res = await fetch(`${BACKEND_URL}${path}`, {
+      const timeout = AbortSignal.timeout(ATTEMPT_TIMEOUT_MS);
+      const signal = init?.signal
+        ? AbortSignal.any([init.signal, timeout])
+        : timeout;
+      res = await fetch(path, {
         ...init,
         headers,
         cache: "no-store",
-        signal: AbortSignal.timeout(ATTEMPT_TIMEOUT_MS),
+        signal,
       });
       break;
     } catch (error) {
@@ -89,7 +105,9 @@ export async function apiFetch<T = unknown>(
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
         continue;
       }
-      throw error;
+      throw isTimeoutError(error)
+        ? new ApiClientError("The server is taking too long to respond. Please check that the backend is running and try again.", 0)
+        : error;
     }
   }
 
@@ -100,7 +118,10 @@ export async function apiFetch<T = unknown>(
   const json = (await res.json().catch(() => null)) as Envelope<T> | null;
 
   if (!res.ok || json?.success === false) {
-    throw new ApiClientError(json?.message ?? res.statusText, res.status);
+    throw new ApiClientError(
+      json?.message ?? json?.error ?? res.statusText,
+      res.status
+    );
   }
 
   return json?.data as T;
