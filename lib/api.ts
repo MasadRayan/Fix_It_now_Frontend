@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-import type { ApiEnvelope } from "@/lib/types";
+import type { ApiEnvelope, PaginationMeta } from "@/lib/types";
 import { BACKEND_URL, TOKEN_COOKIE } from "@/lib/backend";
 import { backendFetch } from "@/lib/fetch-backend";
 
@@ -74,4 +74,36 @@ export async function serverFetch<T = unknown>(
   }
 
   return json.data as T;
+}
+
+export async function serverFetchPage<T>(
+  path: string,
+  init?: RequestInit,
+  tokenOverride?: string | null
+): Promise<{ data: T[]; meta: PaginationMeta }> {
+  const token =
+    tokenOverride !== undefined ? tokenOverride : await getAccessToken();
+
+  const headers = new Headers(init?.headers);
+  headers.set("Content-Type", "application/json");
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  const res = await backendFetch(`${BACKEND_URL}${path}`, {
+    ...init,
+    headers,
+    cache: "no-store",
+  });
+
+  const json = (await res.json().catch(() => null)) as ApiEnvelope<T[]> | null;
+
+  if (!res.ok || !json?.success) {
+    throw new ApiError(json?.message ?? res.statusText, res.status);
+  }
+
+  return {
+    data: json.data ?? [],
+    meta: json.meta ?? { page: 1, limit: 10, total: 0, totalPages: 0 },
+  };
 }

@@ -1,11 +1,21 @@
-import React from 'react'
+import { getAdminUsers } from "../_actions/getAdminUsers";
+import { getAdminBookings } from "../_actions/getAdminBookings";
+import { getAdminCategories } from "../_actions/getAdminCategories";
+import { AdminOverview } from "../_components/admin-overview";
+import { RecordError } from "../_components/Userprofile/record-error";
 
-const AdminDashboardPage = () => {
+export default async function AdminDashboardPage() {
+  const [users, bookings, categories] = await Promise.all([
+    getAdminUsers({ limit: 100 }).catch(() => null),
+    getAdminBookings({ limit: 100 }).catch(() => null),
+    getAdminCategories().catch(() => []),
+  ]);
+
+  if (!users || !bookings) {
+    return <RecordError retryHref="/admin-dashboard" />;
+  }
+
   return (
-    <div>
-      
-    </div>
-  )
+    <AdminOverview users={users} bookings={bookings} categories={categories} />
+  );
 }
-
-export default AdminDashboardPage 
