@@ -102,8 +102,30 @@ export async function serverFetchPage<T>(
     throw new ApiError(json?.message ?? res.statusText, res.status);
   }
 
-  return {
-    data: json.data ?? [],
-    meta: json.meta ?? { page: 1, limit: 10, total: 0, totalPages: 0 },
+  const payload = json.data as unknown;
+
+  const isNestedPayload =
+    !!payload &&
+    typeof payload === "object" &&
+    !Array.isArray(payload) &&
+    "data" in (payload as Record<string, unknown>);
+
+  const data = isNestedPayload
+    ? ((payload as { data?: T[] }).data ?? [])
+    : Array.isArray(payload)
+      ? (payload as T[])
+      : [];
+
+  const fallbackMeta: PaginationMeta = {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
   };
+
+  const meta = isNestedPayload
+    ? (payload as { meta?: PaginationMeta }).meta ?? json.meta ?? fallbackMeta
+    : json.meta ?? fallbackMeta;
+
+  return { data, meta };
 }

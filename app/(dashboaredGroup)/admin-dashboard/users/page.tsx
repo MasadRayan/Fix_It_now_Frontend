@@ -1,4 +1,9 @@
-import type { Role, UserStatus } from "@/lib/types";
+import type {
+  AdminUserListItem,
+  PaginationMeta,
+  Role,
+  UserStatus,
+} from "@/lib/types";
 import { getAdminUsers } from "../../_actions/getAdminUsers";
 import { UsersBoard } from "../../_components/users-board";
 
@@ -25,21 +30,29 @@ export default async function AdminUsersPage({
     : undefined;
   const page = Math.max(1, Number(typeof sp.page === "string" ? sp.page : "1") || 1);
 
-  const { data, meta } = await getAdminUsers({
-    role,
-    status,
-    search: search || undefined,
-    page,
-    limit: 25,
-  }).catch(() => ({
-    data: [],
-    meta: { page: 1, limit: 25, total: 0, totalPages: 0 },
-  }));
+  let data: AdminUserListItem[] = [];
+  let meta: PaginationMeta = { page, limit: 100, total: 0, totalPages: 0 };
+  let error: string | null = null;
+
+  try {
+    const result = await getAdminUsers({
+      role,
+      status,
+      search: search || undefined,
+      page,
+      limit: 100,
+    });
+    data = result.data;
+    meta = result.meta;
+  } catch (err) {
+    error = err instanceof Error ? err.message : String(err);
+  }
 
   return (
     <UsersBoard
       users={data}
       meta={meta}
+      error={error}
       search={search}
       role={role}
       status={status}

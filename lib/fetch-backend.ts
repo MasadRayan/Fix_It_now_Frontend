@@ -2,9 +2,9 @@ import "server-only";
 import { Agent } from "undici";
 
 const MAX_ATTEMPTS = 3;
-const ATTEMPT_TIMEOUT_MS = 5000;
-const CONNECT_TIMEOUT_MS = 3000;
-const RETRY_DELAY_MS = 150;
+const ATTEMPT_TIMEOUT_MS = 20000;
+const CONNECT_TIMEOUT_MS = 5000;
+const RETRY_DELAY_MS = 500;
 
 const agent = new Agent({ connect: { timeout: CONNECT_TIMEOUT_MS } });
 
@@ -12,6 +12,16 @@ type FetchInit = RequestInit & { dispatcher?: Agent };
 
 interface AttemptError extends Error {
   cause?: { code?: string };
+}
+
+function isTimeoutError(error: unknown): boolean {
+  const e = error as { name?: string; message?: string };
+  return (
+    e?.name === "TimeoutError" ||
+    e?.name === "AbortError" ||
+    typeof e?.message === "string" &&
+      e.message.includes("aborted due to timeout")
+  );
 }
 
 function isNetworkError(error: unknown): boolean {
@@ -22,7 +32,7 @@ function isNetworkError(error: unknown): boolean {
       code
     );
   }
-  return error instanceof TypeError;
+  return error instanceof TypeError || isTimeoutError(error);
 }
 
 export async function backendFetch(

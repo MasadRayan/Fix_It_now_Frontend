@@ -22,7 +22,7 @@ const selectCls =
   "mt-1.5 rounded-[2px] border-2 border-ink/30 bg-ticket px-3 py-2 font-mono text-sm text-ink focus:border-safety focus:outline-none";
 
 const ROSTER_COLS =
-  "lg:grid-cols-[4.5rem_minmax(0,1.4fr)_minmax(0,12rem)_6.5rem_8rem_minmax(0,9rem)_6.5rem_5rem]";
+  "lg:grid-cols-[4.5rem_minmax(0,2.8fr)_minmax(0,10rem)_minmax(0,12rem)_6rem_7rem_5rem]";
 
 function makeHref(search: string, role?: string, status?: string, page?: number) {
   const q = new URLSearchParams();
@@ -36,7 +36,7 @@ function makeHref(search: string, role?: string, status?: string, page?: number)
 
 function FilterTag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-[2px] border border-ink/40 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-ink/70">
+    <span className="rounded-xs border border-ink/40 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-ink/70">
       {children}
     </span>
   );
@@ -45,12 +45,14 @@ function FilterTag({ children }: { children: React.ReactNode }) {
 export function UsersBoard({
   users,
   meta,
+  error,
   search,
   role,
   status,
 }: {
   users: AdminUserListItem[];
   meta: PaginationMeta;
+  error?: string | null;
   search: string;
   role?: Role;
   status?: UserStatus;
@@ -124,14 +126,14 @@ export function UsersBoard({
           </div>
           <button
             type="submit"
-            className="h-10 rounded-[2px] border-2 border-ink bg-ink px-4 font-mono text-xs font-bold uppercase tracking-widest text-bone transition-colors hover:bg-safety hover:text-ink"
+            className="h-10 rounded-xs border-2 border-ink bg-ink px-4 font-mono text-xs font-bold uppercase tracking-widest text-bone transition-colors hover:bg-safety hover:text-ink"
           >
             Apply
           </button>
           {hasFilters && (
             <a
               href="/admin-dashboard/users"
-              className="h-10 rounded-[2px] border-2 border-safety px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest text-safety transition-colors hover:bg-safety hover:text-ink"
+              className="h-10 rounded-xs border-2 border-safety px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest text-safety transition-colors hover:bg-safety hover:text-ink"
             >
               Clear
             </a>
@@ -140,35 +142,54 @@ export function UsersBoard({
       </form>
 
       <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-steel">
-        <span>
-          {"// "}
-          {meta.total} record{meta.total === 1 ? "" : "s"} on file
-        </span>
+        {!error && (
+          <span>
+            {"// "}
+            {meta.total} record{meta.total === 1 ? "" : "s"} on file
+          </span>
+        )}
         {search && <FilterTag>find “{search}”</FilterTag>}
         {role && <FilterTag>role {role}</FilterTag>}
         {status && <FilterTag>status {status}</FilterTag>}
       </div>
 
-      {users.length > 0 ? (
+      {error ? (
+        <div className="border-2 border-ink bg-bone p-6 shadow-[4px_4px_0_rgba(33,30,25,0.1)]">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-red-700">
+            Roster unavailable
+          </p>
+          <p className="mt-2 font-mono text-sm text-ink">{error}</p>
+          <p className="mt-1 text-xs text-steel">
+            The roster could not be loaded from the backend. If you just logged
+            in, refresh the page — this usually means the admin session token
+            was rejected or expired.
+          </p>
+        </div>
+      ) : users.length > 0 ? (
         <div className="overflow-hidden rounded-md border-2 border-ink bg-bone shadow-[4px_4px_0_rgba(33,30,25,0.1)]">
           <div
             className={`hidden gap-x-4 border-b-2 border-ink bg-board px-5 py-2.5 lg:grid ${ROSTER_COLS}`}
           >
-            {["REC", "Person", "Contact", "Base", "Role", "Stats", "Status", "Action"].map(
-              (label) => (
-                <span
-                  key={label}
-                  className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-ticket/55"
-                >
-                  {label}
-                </span>
-              )
-            )}
+            {[
+              "REC",
+              "Person",
+              "Contact",
+              "Address",
+              "Role",
+              "Status",
+              "Action",
+            ].map((label) => (
+              <span
+                key={label}
+                className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-ticket/55"
+              >
+                {label}
+              </span>
+            ))}
           </div>
 
           <ul className="divide-y divide-dashed divide-ink/15">
             {users.map((user) => {
-              const profile = user.technicianProfile;
               const initial =
                 user.name?.trim().charAt(0).toUpperCase() ?? user.role.charAt(0);
 
@@ -177,7 +198,10 @@ export function UsersBoard({
                   key={user.id}
                   className={`grid items-start gap-x-4 gap-y-2.5 px-4 py-4 transition-colors hover:bg-ticket/30 sm:px-5 lg:items-center ${ROSTER_COLS}`}
                 >
-                  <span className="hidden font-mono text-[10px] text-steel/60 lg:col-start-1 lg:block">
+                  <span
+                    className="hidden font-mono text-[10px] text-steel/60 lg:col-start-1 lg:block"
+                    title={user.id}
+                  >
                     #{user.id.slice(0, 6).toUpperCase()}
                   </span>
 
@@ -195,64 +219,51 @@ export function UsersBoard({
                       </span>
                     )}
                     <div className="min-w-0">
-                      <p className="truncate font-display text-[15px] font-bold text-ink">
+                      <p className="truncate font-display text-[15px] font-bold text-ink lg:text-[16px]">
                         {user.name}
                       </p>
-                      <p className="truncate font-mono text-[11px] text-steel">
+                      <p className="truncate font-mono text-[11px] text-steel lg:text-[12px]">
                         {user.email}
+                      </p>
+                      <p className="truncate font-mono text-[10px] text-steel/70 lg:text-[11px]">
+                        Avatar {user.avatarUrl ?? "—"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="col-start-2 min-w-0 font-mono text-[11px] lg:col-start-7">
-                    <UserStatusStamp status={user.status} />
-                  </div>
-
-                  <div className="col-span-2 min-w-0 font-mono text-[11px] lg:col-span-1 lg:col-start-3">
+                  <div className="min-w-0 font-mono text-[11px] lg:col-start-3">
                     <p className="truncate text-ink">{user.phone || "—"}</p>
                     <p className="truncate text-steel/70">
-                      {user.address || "No address on file"}
+                      {user.updatedAt ? `Updated ${formatDate(user.updatedAt)}` : "—"}
                     </p>
                   </div>
 
-                  <span className="font-mono text-[11px] text-steel lg:col-start-4">
-                    {profile?.location ?? "—"}
-                  </span>
+                  <div className="min-w-0 font-mono text-[11px] lg:col-start-4">
+                    <p className="truncate text-ink">{user.address || "No address on file"}</p>
+                    <p className="truncate text-steel/70">User ID {user.id}</p>
+                  </div>
 
-                  <span className="w-fit rounded-[2px] border-2 border-ink/50 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-ink lg:col-start-5">
+                  <span className="w-fit rounded-xs border-2 border-ink/50 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-ink lg:col-start-5">
                     {user.role}
                   </span>
 
-                  {profile ? (
-                    <div className="col-span-2 font-mono text-[11px] leading-snug lg:col-span-1 lg:col-start-6">
-                      <p className="flex items-center gap-1 text-ink">
-                        <Star
-                          className="size-3 fill-safety text-safety"
-                          aria-hidden
-                        />
-                        {profile.avgRating ? profile.avgRating.toFixed(1) : "—"}
-                        <span className="text-steel/70">
-                          · {profile.totalReviews} rev
-                        </span>
-                      </p>
-                      <p className="text-ink/70">
-                        {profile.isVerified ? "✓ VERIFIED" : "✗ NOT VERIFIED"}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="col-span-2 font-mono text-[11px] lg:col-span-1 lg:col-start-6">
-                      <p className="text-steel">Since {formatDate(user.createdAt)}</p>
-                    </div>
-                  )}
+                  <div className="min-w-0 font-mono text-[11px] lg:col-start-6 lg:hidden">
+                    <p className="truncate text-ink">Created {formatDate(user.createdAt)}</p>
+                    <p className="truncate text-steel/70">Updated {formatDate(user.updatedAt)}</p>
+                  </div>
 
-                  <div className="col-span-2 flex justify-end lg:col-span-1 lg:col-start-8 lg:justify-start">
+                  <div className="min-w-0 font-mono text-[11px] lg:col-start-6">
+                    <UserStatusStamp status={user.status} />
+                  </div>
+
+                  <div className="col-span-2 flex justify-end lg:col-span-1 lg:col-start-7 lg:justify-start">
                     <button
                       type="button"
                       onClick={() => setBanTarget(user)}
                       className={
                         user.status === "ACTIVE"
-                          ? "w-fit rounded-[2px] border-2 border-ink/70 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-ink transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white"
-                          : "w-fit rounded-[2px] border-2 border-green-700/70 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-green-700 transition-colors hover:bg-green-700 hover:text-white"
+                          ? "w-fit rounded-xs border-2 border-ink/70 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-ink transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white"
+                          : "w-fit rounded-xs border-2 border-green-700/70 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-green-700 transition-colors hover:bg-green-700 hover:text-white"
                       }
                     >
                       {user.status === "ACTIVE" ? "Ban" : "Unban"}
