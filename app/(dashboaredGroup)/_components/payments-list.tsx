@@ -1,10 +1,16 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import type { PaymentListItem } from "@/lib/types";
 import { formatBDT, formatDate } from "@/lib/utils";
 import { PaymentStatusBadge } from "./payment-status-badge";
+import { PaymentDetailDialog } from "./payment-detail-dialog";
 import { EmptyState } from "./empty-state";
 
 export function PaymentsList({ payments }: { payments: PaymentListItem[] }) {
+  const [receiptId, setReceiptId] = useState<string | null>(null);
+
   return (
     <div className="space-y-6 animate-ticket">
       <header className="space-y-1">
@@ -50,9 +56,19 @@ export function PaymentsList({ payments }: { payments: PaymentListItem[] }) {
                     </Link>
                   )}
                 </div>
-                <span className="font-display text-xl font-bold text-ink">
-                  {formatBDT(p.amount)}
-                </span>
+
+                <div className="flex shrink-0 items-center gap-3">
+                  <span className="font-display text-xl font-bold text-ink">
+                    {formatBDT(p.amount)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setReceiptId(p.id)}
+                    className="rounded-sm border-2 border-ink bg-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-bone transition-colors hover:bg-safety hover:text-ink"
+                  >
+                    Receipt
+                  </button>
+                </div>
               </div>
             </li>
           ))}
@@ -65,6 +81,12 @@ export function PaymentsList({ payments }: { payments: PaymentListItem[] }) {
           actionLabel="See bookings"
         />
       )}
+
+      <PaymentDetailDialog
+        paymentId={receiptId}
+        open={receiptId !== null}
+        onClose={() => setReceiptId(null)}
+      />
     </div>
   );
 }
