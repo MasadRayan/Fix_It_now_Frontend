@@ -1,15 +1,4 @@
-import type { ServiceReview } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
-
-function initialsOf(name: string): string {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
-}
+import type { TechnicianReview } from "@/lib/types";
 
 function Stars({ rating }: { rating: number }) {
   const full = Math.min(5, Math.max(0, Math.round(rating)));
@@ -28,7 +17,7 @@ export function JobLedger({
   reviews,
   dispatched,
 }: {
-  reviews: ServiceReview[];
+  reviews: TechnicianReview[];
   dispatched: number;
 }) {
   return (
@@ -47,30 +36,23 @@ export function JobLedger({
 
         {reviews.length > 0 ? (
           <div className="mt-8 overflow-hidden border-2 border-ink/80 bg-ticket-hi">
-            <div className="hidden border-b-2 border-ink/80 bg-ink px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-bone sm:grid sm:grid-cols-[120px_1fr_auto]">
-              <span>Date</span>
-              <span>Customer & note</span>
+            <div className="hidden border-b-2 border-ink/80 bg-ink px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-bone sm:grid sm:grid-cols-[1fr_auto]">
+              <span>What the pro did well</span>
               <span className="text-right">Rating</span>
             </div>
             <ul className="divide-y-2 divide-dashed divide-ink/20">
-              {reviews.map((review) => (
+              {reviews.map((review, index) => (
                 <li
-                  key={review.id}
-                  className="grid gap-2 px-5 py-4 sm:grid-cols-[120px_1fr_auto] sm:items-start sm:gap-6"
+                  key={index}
+                  className="grid gap-2 px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-6"
                 >
-                  <time
-                    className="font-mono text-[11px] uppercase tracking-wider text-steel"
-                    dateTime={review.createdAt}
-                  >
-                    {formatDate(review.createdAt)}
-                  </time>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="flex size-6 shrink-0 items-center justify-center rounded-full border-2 border-ink/50 bg-ticket font-mono text-[9px] font-bold text-ink">
-                        {initialsOf(review.customer.name)}
+                        {"\u2713"}
                       </span>
                       <span className="truncate text-sm font-semibold text-ink">
-                        {review.customer.name}
+                        Verified customer
                       </span>
                     </div>
                     {review.comment && (

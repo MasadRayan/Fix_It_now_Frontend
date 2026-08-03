@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import type { ServiceDetails, ServiceReview } from "@/lib/types";
+import type { ServiceDetails, TechnicianReview } from "@/lib/types";
 import { formatBDT } from "@/lib/utils";
 import { getServiceById } from "../../_actions/getServiceById";
+import { getTechnicianById } from "../../_actions/getTechnicianById";
 import {
   BoardCta,
   DispatchHeader,
@@ -50,9 +51,15 @@ export default async function ServiceDetailsPage({
     service = null;
   }
 
-  const reviews: ServiceReview[] = (service?.bookings ?? [])
-    .map((booking) => booking.review)
-    .filter((review): review is ServiceReview => Boolean(review));
+  let reviews: TechnicianReview[] = [];
+  if (service) {
+    try {
+      const res = await getTechnicianById(service.technicianId);
+      reviews = (res?.data?.reviews ?? []) as TechnicianReview[];
+    } catch {
+      reviews = [];
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-ticket text-ink">

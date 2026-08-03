@@ -319,6 +319,11 @@ export interface ServiceReview {
   customer: { name: string; avatarUrl: string | null };
 }
 
+export interface TechnicianReview {
+  rating: number;
+  comment: string | null;
+}
+
 export interface ServiceDetails extends Service {
   category?: Pick<Category, "name" | "description" | "iconUrl">;
   technician?: {

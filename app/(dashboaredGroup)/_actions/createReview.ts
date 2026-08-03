@@ -14,8 +14,7 @@ export interface CreateReviewResult {
 export async function createReview(
   bookingId: string,
   rating: number,
-  comment?: string,
-  serviceId?: string
+  comment?: string
 ): Promise<CreateReviewResult> {
   const token = await getAccessToken();
 
@@ -60,9 +59,7 @@ export async function createReview(
 
   updateTag("public-services");
   updateTag("public-reviews");
-  if (serviceId) {
-    revalidatePath(`/services/${serviceId}`);
-  }
+  revalidatePath("/services/[id]", "page");
 
   return { success: true, message: result.message ?? "Review posted." };
 }
