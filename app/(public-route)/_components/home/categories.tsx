@@ -50,7 +50,7 @@ export async function Categories() {
               className="group flex items-center gap-3 rounded-sm border-ink/25 bg-ticket-hi p-4 shadow-none transition-all hover:-translate-y-0.5 hover:border-ink"
             >
               <Link
-                href="#services"
+                href="/services"
                 className="flex items-center gap-3"
                 aria-label={`${category.name} services`}
               >

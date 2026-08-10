@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { TOKEN_COOKIE } from "@/lib/backend";
 
 const AUTH_ROUTES = ["/login", "/register"];
-const PUBLIC_ROUTES = ["/", "/services"];
+const PUBLIC_ROUTES = ["/", "/services", "/about", "/contact"];
 
 const roleHome: Record<string, string> = {
   CUSTOMER: "/dashboard",
@@ -98,5 +98,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpe?g|webp|gif|svg|avif)$).*)"],
 };
