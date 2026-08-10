@@ -8,7 +8,7 @@ const statusStyles: Record<BookingStatus, string> = {
   PAID: "border-green-700/60 bg-green-50 text-green-900",
   IN_PROGRESS: "border-purple-600/60 bg-purple-50 text-purple-900",
   COMPLETED: "border-emerald-700/60 bg-emerald-50 text-emerald-900",
-  CANCELLED: "border-zinc-500/60 bg-zinc-100 text-zinc-700",
+  CANCELLED: "border-ink/30 bg-muted text-muted-foreground",
 };
 
 export function BookingStatusBadge({ status }: { status: BookingStatus }) {

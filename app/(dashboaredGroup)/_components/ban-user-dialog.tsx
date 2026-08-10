@@ -41,9 +41,9 @@ export function BanUserDialog({
       onClose={onClose}
       title={banning ? "Ban this user?" : "Unban this user?"}
     >
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted-foreground">
         {banning ? "This will block " : "This will restore "}
-        <span className="font-semibold text-zinc-900">{user.name}</span>
+        <span className="font-semibold text-foreground">{user.name}</span>
         {banning
           ? " from the platform. They won\u2019t be able to log in until you unban them."
           : " to the platform. They can log in again."}
@@ -52,7 +52,7 @@ export function BanUserDialog({
         <button
           type="button"
           onClick={onClose}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+          className="rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           Keep
         </button>

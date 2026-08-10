@@ -16,10 +16,10 @@ export default function Error({
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 p-8 text-center">
       <h1 className="text-2xl font-semibold">Something went wrong</h1>
-      <p className="max-w-md text-zinc-500">{error.message}</p>
+      <p className="max-w-md text-muted-foreground">{error.message}</p>
       <button
         onClick={reset}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
       >
         Try again
       </button>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function MobileNav({
   links,
@@ -17,7 +18,7 @@ export function MobileNav({
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="flex size-10 items-center justify-center rounded-md border border-white/20 text-bone"
+        className="flex size-10 items-center justify-center rounded-md border border-white/20 text-bone dark:border-black/20"
       >
         {open ? (
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
@@ -41,24 +42,25 @@ export function MobileNav({
       </button>
 
       {open && (
-        <div className="absolute inset-x-0 top-16 border-t border-white/10 bg-ink p-4">
+        <div className="absolute inset-x-0 top-16 border-t border-white/10 bg-ink p-4 dark:border-black/10">
           <nav className="flex flex-col">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium text-bone/90 hover:bg-white/10"
+                className="rounded-md px-3 py-3 text-sm font-medium text-bone/90 hover:bg-white/10 dark:hover:bg-black/10"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="mt-3 flex gap-3 border-t border-white/10 pt-3">
+          <div className="mt-3 flex items-center gap-3 border-t border-white/10 pt-3 dark:border-black/10">
+            <ThemeToggle className="dark:hover:bg-black/10" />
             <Link
               href="/login"
               onClick={() => setOpen(false)}
-              className="flex-1 rounded-md border border-white/25 px-3 py-2.5 text-center text-sm font-medium text-bone"
+              className="flex-1 rounded-md border border-white/25 px-3 py-2.5 text-center text-sm font-medium text-bone dark:border-black/25"
             >
               Log in
             </Link>

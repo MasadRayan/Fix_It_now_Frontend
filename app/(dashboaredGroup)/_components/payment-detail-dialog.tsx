@@ -93,7 +93,7 @@ export function PaymentDetailDialog({
   return (
     <Dialog open={open} onClose={onClose} title="Payment receipt">
       {error ? (
-        <p className="text-sm text-red-700">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       ) : loading ? (
         <div className="space-y-3 animate-pulse">
           <div className="h-4 w-40 rounded bg-ink/10" />

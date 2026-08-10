@@ -110,7 +110,7 @@ export function AdminCategoriesBoard({
                         "inline-flex shrink-0 items-center gap-1.5 rounded-sm border-2 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.18em]",
                         category.isActive
                           ? "border-green-700/60 bg-green-50 text-green-900"
-                          : "border-zinc-500/60 bg-zinc-100 text-zinc-700"
+                          : "border-ink/30 bg-muted text-muted-foreground"
                       )}
                     >
                       <span

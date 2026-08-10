@@ -37,16 +37,16 @@ export function CancelBookingDialog({
 
   return (
     <Dialog open={open} onClose={onClose} title="Cancel booking?">
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted-foreground">
         This will cancel{" "}
-        <span className="font-semibold text-zinc-900">{serviceTitle}</span>.
+        <span className="font-semibold text-foreground">{serviceTitle}</span>.
         Once cancelled it can&apos;t be undone.
       </p>
       <label
         htmlFor="cancel-reason"
-        className="mb-1 mt-4 block text-sm font-medium text-zinc-700"
+        className="mb-1 mt-4 block text-sm font-medium text-foreground"
       >
-        Reason <span className="font-normal text-zinc-400">(optional)</span>
+        Reason <span className="font-normal text-muted-foreground">(optional)</span>
       </label>
       <textarea
         id="cancel-reason"
@@ -54,13 +54,13 @@ export function CancelBookingDialog({
         onChange={(e) => setReason(e.target.value)}
         rows={2}
         placeholder="Changed my mind…"
-        className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+        className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
       />
       <div className="mt-5 flex justify-end gap-2">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+          className="rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           Keep booking
         </button>

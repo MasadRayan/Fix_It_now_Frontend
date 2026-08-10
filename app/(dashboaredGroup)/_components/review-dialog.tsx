@@ -77,9 +77,9 @@ export function ReviewDialog({
 
   return (
     <Dialog open={open} onClose={onClose} title="Leave a review">
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted-foreground">
         Rate the work on{" "}
-        <span className="font-semibold text-zinc-900">
+        <span className="font-semibold text-foreground">
           {booking.service?.title ?? "this booking"}
         </span>
         . One review per booking — you can&apos;t change it later.
@@ -99,7 +99,7 @@ export function ReviewDialog({
               role="radio"
               aria-checked={rating === value}
               aria-label={`${value} star${value === 1 ? "" : "s"}`}
-              className="group relative inline-flex size-10 items-center justify-center text-3xl leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
+              className="group relative inline-flex size-10 items-center justify-center text-3xl leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               onPointerEnter={() => setHovered(value)}
               onPointerLeave={() => setHovered(0)}
               onClick={() => setRating(value)}
@@ -108,7 +108,7 @@ export function ReviewDialog({
                 className={
                   active
                     ? "animate-punch text-amber-500"
-                    : "text-zinc-300 transition-colors group-hover:text-amber-400"
+                    : "text-zinc-300 transition-colors group-hover:text-amber-500"
                 }
               >
                 {active ? ALLOWED : IDLE}
@@ -118,15 +118,15 @@ export function ReviewDialog({
         })}
       </div>
 
-      <p className="mt-3 min-h-5 text-sm text-zinc-500">
+      <p className="mt-3 min-h-5 text-sm text-muted-foreground">
         {rating >= 1 ? `${rating}/5 — ${VERDICTS[rating]}` : "Tap a star to rate."}
       </p>
 
       <label
         htmlFor="review-note"
-        className="mb-1 mt-4 block text-sm font-medium text-zinc-700"
+        className="mb-1 mt-4 block text-sm font-medium text-foreground"
       >
-        Comment <span className="font-normal text-zinc-400">(optional)</span>
+        Comment <span className="font-normal text-muted-foreground">(optional)</span>
       </label>
       <textarea
         id="review-note"
@@ -135,7 +135,7 @@ export function ReviewDialog({
         rows={3}
         maxLength={500}
         placeholder="What should the next customer know?"
-        className="w-full resize-none rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+        className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
       />
 
       <div className="mt-5 flex justify-end gap-2">
@@ -143,7 +143,7 @@ export function ReviewDialog({
           type="button"
           onClick={onClose}
           disabled={pending}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-60"
+          className="rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-60"
         >
           Not now
         </button>
@@ -151,7 +151,7 @@ export function ReviewDialog({
           type="button"
           onClick={handleSubmit}
           disabled={pending || rating < 1}
-          className="flex items-center gap-2 rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80 disabled:opacity-60"
         >
           {pending && (
             <span

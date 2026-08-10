@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import type { User } from "@/lib/types";
 import { breadcrumb, sectionTitle } from "./nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Topbar({
   role,
@@ -67,6 +68,9 @@ export function Topbar({
           </div>
           <span className="animate-stamp rounded-sm border-2 border-ink px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-ink shadow-[2px_2px_0_rgba(33,30,25,0.18)]">
             {role}
+          </span>
+          <span className="text-ink">
+            <ThemeToggle />
           </span>
         </div>
       </div>

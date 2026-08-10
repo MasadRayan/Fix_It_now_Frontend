@@ -55,8 +55,8 @@ export function UserMenu() {
     <div ref={rootRef} className="relative">
       {status === "loading" ? (
         <div className="flex items-center gap-2">
-          <span className="hidden size-9 animate-pulse rounded-full bg-white/10 sm:block" />
-          <span className="hidden h-4 w-16 animate-pulse rounded bg-white/10 sm:block" />
+          <span className="hidden size-9 animate-pulse rounded-full bg-white/10 dark:bg-black/10 sm:block" />
+          <span className="hidden h-4 w-16 animate-pulse rounded bg-white/10 dark:bg-black/10 sm:block" />
         </div>
       ) : user === null ? (
         <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export function UserMenu() {
             aria-haspopup="menu"
             aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
-            className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-safety"
+            className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-white/10 dark:hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-safety"
           >
             {user.avatarUrl ? (
               <Image
@@ -107,9 +107,9 @@ export function UserMenu() {
           {open && (
             <div
               role="menu"
-              className="absolute right-0 top-full mt-2 w-60 overflow-hidden rounded-lg border border-white/10 bg-ink py-1.5 shadow-2xl shadow-black/40"
+              className="absolute right-0 top-full mt-2 w-60 overflow-hidden rounded-lg border border-white/10 bg-ink py-1.5 shadow-2xl shadow-black/40 dark:border-black/10"
             >
-              <div className="border-b border-white/10 px-4 py-3">
+              <div className="border-b border-white/10 px-4 py-3 dark:border-black/10">
                 <p className="truncate text-sm font-semibold text-bone">
                   {user.name}
                 </p>
@@ -119,7 +119,7 @@ export function UserMenu() {
                 href={dashboardByRole[user.role]}
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-bone/85 transition-colors hover:bg-white/10 hover:text-bone"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-bone/85 transition-colors hover:bg-white/10 hover:text-bone dark:hover:bg-black/10"
               >
                 <LayoutDashboard className="size-4" aria-hidden />
                 Dashboard
@@ -128,7 +128,7 @@ export function UserMenu() {
                 type="button"
                 role="menuitem"
                 onClick={handleLogout}
-                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-bone/85 transition-colors hover:bg-white/10 hover:text-bone"
+                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-bone/85 transition-colors hover:bg-white/10 hover:text-bone dark:hover:bg-black/10"
               >
                 <LogOut className="size-4" aria-hidden />
                 Log out

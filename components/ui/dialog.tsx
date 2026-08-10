@@ -41,7 +41,7 @@ export function Dialog({
     >
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+          className="w-full max-w-md rounded-xl bg-background p-6 text-foreground shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="mb-4 flex items-center justify-between">
@@ -49,7 +49,7 @@ export function Dialog({
             <button
               onClick={onClose}
               aria-label="Close dialog"
-              className="flex size-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100"
+              className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted"
             >
               ✕
             </button>

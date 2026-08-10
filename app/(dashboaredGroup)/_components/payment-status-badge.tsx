@@ -5,7 +5,7 @@ const statusStyles: Record<PaymentStatus, string> = {
   PENDING: "border-amber-600/60 bg-amber-50 text-amber-900",
   COMPLETED: "border-green-700/60 bg-green-50 text-green-900",
   FAILED: "border-red-600/60 bg-red-50 text-red-900",
-  REFUNDED: "border-zinc-500/60 bg-zinc-100 text-zinc-700",
+  REFUNDED: "border-ink/30 bg-muted text-muted-foreground",
 };
 
 export function PaymentStatusBadge({ status }: { status: PaymentStatus }) {

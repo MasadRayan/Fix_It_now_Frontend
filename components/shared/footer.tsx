@@ -64,7 +64,7 @@ export function Footer() {
         ))}
       </div>
 
-      <div className="border-t border-white/10">
+      <div className="border-t border-bone/15">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5 font-mono text-[10px] uppercase tracking-wider text-bone/40 sm:px-6">
           <span>{"\u00a9"} 2026 FixItNow</span>
           <span>Made for the homes of Dhaka</span>
